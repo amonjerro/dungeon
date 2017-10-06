@@ -31,6 +31,39 @@
 				return Math.floor(Math.random()*(max-min+1)+min);
 			}
 
+			function mapRoom(room){
+				for (var i = room.y_coord; i < (room.y_coord+room.height);i++){
+					for (var j = room.x_coord; j < (room.x_coord +room.width); j++){
+						map[i][j] = 1;
+					}
+				}
+			}
+
+
+			//Prim's Algorithm Functions
+			function pushNeighboursToFrontier(cell){
+				//TODO
+			}
+
+			function pickFromFrontier(){
+				//TODO
+			}
+
+			function pickStart(){
+				var x;
+				var y;
+				var not_placeable = true;
+				while (not_placeable){
+					x = randomIntFromInterval(1, total_x_cells-1);
+					y = randomIntFromInterval(1, total_y_cells-1);
+					if (map[y][x] === 0){
+						not_placeable = false;
+					}
+				}
+				map[y][x] = 2;
+				return {x:x, y:y};
+			}
+
 			function createRoom(min, max){
 				var room = {
 					width: randomIntFromInterval(min,max),
@@ -51,7 +84,7 @@
 
 			//Graphics
 			function paintRoom(room){
-				ctx.fillRect(room.x_coord*cell_x,room.y_coord*cell_y,room.width*cell_x,room.height*cell_y);
+				// ctx.fillRect(room.x_coord*cell_x,room.y_coord*cell_y,room.width*cell_x,room.height*cell_y);
 				ctx.strokeStyle = '#999999';
 				ctx.strokeRect(room.x_coord*cell_x,room.y_coord*cell_y,room.width*cell_x,room.height*cell_y);
 			}
@@ -69,6 +102,15 @@
 					ctx.lineTo(total_x_cells*cell_x,i*cell_y);
 				}
 				ctx.stroke();
+			}
+
+			function paintCorridor(cell){
+				ctx.strokeStyle = '#33AA33';
+				ctx.strokeRect(cell.x*cell_x,cell.y*cell_y,cell_x,cell_y);
+			}
+			function paintFrontier(cell){
+				ctx.strokeStyle = '#3333AA';
+				ctx.strokeRect(cell.x*cell_x,cell.y*cell_y,cell_x,cell_y);
 			}
 
 			function showGrid(){
@@ -94,9 +136,9 @@
 				}
 			}
 
-			for (var i = 0; i < total_x_cells; i++){
+			for (var i = 0; i < total_y_cells; i++){
 				map.push([])
-				for (var j = 0; j < total_y_cells; j++){
+				for (var j = 0; j < total_x_cells; j++){
 					map[i].push(0);
 				}
 			}
@@ -113,6 +155,7 @@
 					}
 				}
 				if (!collision){
+					mapRoom(room);
 					room_array.push(room);
 				}
 			}
@@ -120,6 +163,9 @@
 			for (var i = 0; i < room_array.length; i++){
 				paintRoom(room_array[i]);
 			}
+
+			var current_cell = pickStart();
+			paintCorridor(current_cell);
 
 			//paintGrid();
 		</script>
