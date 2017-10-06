@@ -4,7 +4,7 @@ A procedural dungeon generator for the web.
 The construction of the maze is based on Prim's algorithm [as explained](http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm) as explained by Jamis Buck.
 
 ## Current status
-Its waaaay early into development. The maze is just two randomly generated rectangles that don't interact with each other. It's less of a maze and more "Babby's First Rect-Draw Tool". 
+Its waaaay early into development. The maze currently only generates the rooms every time the page is loaded. It has a button that toggles the grid. I still need to add a button that generates the rooms on demand, which probably means putting all of the loose iterations onto functions. Thinking about moving all those functions to separate files and keeping the code properly compartmentalized.
 
 ## What's in store
 - First should be completing the dang maze. It will be very similar to the way it is done by Bob Nystrom in [his post](http://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/).
