@@ -2,12 +2,15 @@
 	<head>
 		<title>Mazer</title>
 		<link rel="stylesheet" href="css/style.css">
+		
 	</head>
 	<body>
 		<canvas width="500" height="500" id="canvas"></canvas>
 		<div class="top-margin">
 			<button onclick="toggleGrid()">Toggle Grid</button>
 		</div>
+		<script src="js/rooms.js"></script>
+		<script src="js/grid.js"></script>
 		<script>
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
@@ -29,14 +32,6 @@
 			//Helpers
 			function randomIntFromInterval(min,max){
 				return Math.floor(Math.random()*(max-min+1)+min);
-			}
-
-			function mapRoom(room){
-				for (var i = room.y_coord; i < (room.y_coord+room.height);i++){
-					for (var j = room.x_coord; j < (room.x_coord +room.width); j++){
-						map[i][j] = 1;
-					}
-				}
 			}
 
 
@@ -64,46 +59,7 @@
 				return {x:x, y:y};
 			}
 
-			function createRoom(min, max){
-				var room = {
-					width: randomIntFromInterval(min,max),
-					height: randomIntFromInterval(min,max)
-				}
-				room.y_coord = randomIntFromInterval(1,total_y_cells-room.height-1);
-				room.x_coord = randomIntFromInterval(1,total_x_cells-room.width-1);
-				return room;
-			}
-
-			function detectRoomCollision(room_a,room_b){
-				return (room_a.x_coord < room_b.x_coord + room_b.width &&
-				   room_a.x_coord + room_a.width > room_b.x_coord &&
-				   room_a.y_coord < room_b.y_coord + room_b.height &&
-				   room_a.height + room_a.y_coord > room_b.y_coord)
-			}
-
-
 			//Graphics
-			function paintRoom(room){
-				// ctx.fillRect(room.x_coord*cell_x,room.y_coord*cell_y,room.width*cell_x,room.height*cell_y);
-				ctx.strokeStyle = '#999999';
-				ctx.strokeRect(room.x_coord*cell_x,room.y_coord*cell_y,room.width*cell_x,room.height*cell_y);
-			}
-
-			function paintGrid(){
-				ctx.beginPath();
-				ctx.strokeStyle = '#555555';
-				for (var i = 1; i < total_x_cells; i++){
-					ctx.moveTo(i*cell_x,0);
-					ctx.lineTo(i*cell_x,total_y_cells*cell_y);
-				}
-				ctx.stroke();
-				for (var i = 1; i < total_y_cells; i++){
-					ctx.moveTo(0,i*cell_y);
-					ctx.lineTo(total_x_cells*cell_x,i*cell_y);
-				}
-				ctx.stroke();
-			}
-
 			function paintCorridor(cell){
 				ctx.strokeStyle = '#33AA33';
 				ctx.strokeRect(cell.x*cell_x,cell.y*cell_y,cell_x,cell_y);
@@ -111,29 +67,6 @@
 			function paintFrontier(cell){
 				ctx.strokeStyle = '#3333AA';
 				ctx.strokeRect(cell.x*cell_x,cell.y*cell_y,cell_x,cell_y);
-			}
-
-			function showGrid(){
-				ctx.clearRect(0,0,canvas.width,canvas.height)
-				for (var i = 0; i < room_array.length; i++){
-					paintRoom(room_array[i]);
-				}
-				paintGrid();
-			}
-			function hideGrid(){
-				ctx.clearRect(0,0,canvas.width,canvas.height)
-				for (var i = 0; i < room_array.length; i++){
-					paintRoom(room_array[i]);
-				}
-			}
-
-			function toggleGrid(){
-				grid = !grid;
-				if (grid){
-					showGrid();
-				} else {
-					hideGrid();
-				}
 			}
 
 			for (var i = 0; i < total_y_cells; i++){
