@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Mazer</title>
@@ -9,19 +10,16 @@
 		<div class="top-margin">
 			<button onclick="toggleGrid()">Toggle Grid</button>
 		</div>
-		<script src="js/rooms.js"></script>
+		<script src="js/structures.js"></script>
 		<script src="js/grid.js"></script>
+		<script src="js/graphics.js"></script>
 		<script>
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
 			var map = [];
 			var grid = false;
 
-			//Convert pixels into cell dimensions
-			var cell_x = 10;
-			var cell_y = 10;
-			var total_y_cells = Math.floor(canvas.height / cell_y);
-			var total_x_cells = Math.floor(canvas.width / cell_x);
+			
 
 			//Room stuff
 			var min_room = 4;
@@ -59,15 +57,9 @@
 				return {x:x, y:y};
 			}
 
-			//Graphics
-			function paintCorridor(cell){
-				ctx.strokeStyle = '#33AA33';
-				ctx.strokeRect(cell.x*cell_x,cell.y*cell_y,cell_x,cell_y);
-			}
-			function paintFrontier(cell){
-				ctx.strokeStyle = '#3333AA';
-				ctx.strokeRect(cell.x*cell_x,cell.y*cell_y,cell_x,cell_y);
-			}
+			
+
+			// Initialize an empty map
 
 			for (var i = 0; i < total_y_cells; i++){
 				map.push([])
@@ -76,31 +68,22 @@
 				}
 			}
 
-			var room;
-			var collision;
-			for (var i = 0; i < attempts; i++){
-				collision = false;
-				room = createRoom(min_room,max_room);
-				for (var j = 0; j < room_array.length; j++){
-					if(detectRoomCollision(room, room_array[j])){
-						collision = true;
-						break;
-					}
+			function main(){
+				// Establish the rooms
+				establish_rooms()
+
+				// Paint the rooms
+				for (var i = 0; i < room_array.length; i++){
+					paintRoom(room_array[i]);
 				}
-				if (!collision){
-					mapRoom(room);
-					room_array.push(room);
-				}
+
+
+				// Start creating the corridors
+				var current_cell = pickStart();
+				make_corridors(current_cell)
 			}
 
-			for (var i = 0; i < room_array.length; i++){
-				paintRoom(room_array[i]);
-			}
-
-			var current_cell = pickStart();
-			paintCorridor(current_cell);
-
-			//paintGrid();
+			main()
 		</script>
 	</body>
 </html>
