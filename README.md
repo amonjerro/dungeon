@@ -5,6 +5,9 @@ The construction of the maze is based on Prim's algorithm [as explained](http://
 
 ## Current Sample Maze
 
+![image](https://user-images.githubusercontent.com/9394777/169704785-d2801b96-af03-490d-9ce5-4794da584672.png)
+
+
 ## TO DO
 
 - [ ] Shave off useless corridors
