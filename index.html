@@ -10,6 +10,7 @@
 		<div class="top-margin">
 			<button onclick="toggleGrid()">Toggle Grid</button>
 		</div>
+		<script src="js/utils.js"></script>
 		<script src="js/structures.js"></script>
 		<script src="js/grid.js"></script>
 		<script src="js/graphics.js"></script>
@@ -19,36 +20,19 @@
 			var map = [];
 			var grid = false;
 
-			
-
 			//Room stuff
 			var min_room = 4;
 			var max_room = 10;
-			var attempts = 50;
+			var attempts = 200;
 			var room_array = [];
-
-			//Helpers
-			function randomIntFromInterval(min,max){
-				return Math.floor(Math.random()*(max-min+1)+min);
-			}
-
-
-			//Prim's Algorithm Functions
-			function pushNeighboursToFrontier(cell){
-				//TODO
-			}
-
-			function pickFromFrontier(){
-				//TODO
-			}
 
 			function pickStart(){
 				var x;
 				var y;
 				var not_placeable = true;
 				while (not_placeable){
-					x = randomIntFromInterval(1, total_x_cells-1);
-					y = randomIntFromInterval(1, total_y_cells-1);
+					x = randomOddIntFromInterval(1, total_x_cells-1);
+					y = randomOddIntFromInterval(1, total_y_cells-1);
 					if (map[y][x] === 0){
 						not_placeable = false;
 					}
@@ -57,10 +41,29 @@
 				return {x:x, y:y};
 			}
 
+			function scanForNewSeeds(){
+				let seed = null
+				for(let y = 1; y < total_y_cells-1; y += 2){
+					let found = false;
+					for (let x = 1; x < total_x_cells-1; x += 2){
+						let horizon = get_valid_cell_neighbors({x:x, y:y})
+						if (horizon.length > 0){
+							found = true;
+							seed = {x:x, y:y}
+							console.log(seed, horizon)
+							break;
+						}
+					}
+					if (found){
+						break;
+					}
+				}
+				
+				return seed
+			}
 			
 
 			// Initialize an empty map
-
 			for (var i = 0; i < total_y_cells; i++){
 				map.push([])
 				for (var j = 0; j < total_x_cells; j++){
@@ -77,10 +80,20 @@
 					paintRoom(room_array[i]);
 				}
 
+				let finished = false;
 
 				// Start creating the corridors
 				var current_cell = pickStart();
-				make_corridors(current_cell)
+				while(!finished){
+					make_corridors(current_cell)
+					current_cell = scanForNewSeeds()
+					if (current_cell == null){
+						finished = true;
+					}
+				}
+				
+
+
 			}
 
 			main()

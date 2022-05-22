@@ -14,11 +14,11 @@ function mapRoom(room){
 
 function createRoom(min, max){
     var room = {
-        width: randomIntFromInterval(min,max),
-        height: randomIntFromInterval(min,max)
+        width: randomOddIntFromInterval(min,max),
+        height: randomOddIntFromInterval(min,max)
     }
-    room.y_coord = randomIntFromInterval(1,total_y_cells-room.height-1);
-    room.x_coord = randomIntFromInterval(1,total_x_cells-room.width-1);
+    room.y_coord = randomOddIntFromInterval(1,total_y_cells-room.height-1);
+    room.x_coord = randomOddIntFromInterval(1,total_x_cells-room.width-1);
     return room;
 }
 
