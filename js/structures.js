@@ -48,14 +48,37 @@ function establish_rooms(){
     }
 }
 
+function check_map_validity(x,y){
+    if (x < 1 || y < 1){
+        return false
+    }
+    if (x > total_x_cells-2 || y > total_y_cells-2 ){
+        return false
+    }
+    return true
+}
+
 function get_valid_cell_neighbors(cell){
     let valid_neighbors = []
-    let north_neighbor = map[cell.y-2][cell.x]
-    let south_neighbor = map[cell.y+2][cell.x]
-    let east_neighbor = map[cell.y][cell.x+2]
-    let west_neighbor = map[cell.y][cell.x-2]
+    
+    let north_neighbor = null
+    if(check_map_validity(cell.x, cell.y-2)){
+        north_neighbor = map[cell.y-2][cell.x]
+    }
+    let south_neighbor = null
+    if(check_map_validity(cell.x, cell.y+2)){
+        south_neighbor = map[cell.y+2][cell.x]
+    }
+    let east_neighbor = null
+    if(check_map_validity(cell.x+2, cell.y)){
+        east_neighbor = map[cell.y][cell.x+2]
+    }
+    let west_neighbor = null
+    if(check_map_validity(cell.x-2, cell.y)){
+        west_neighbor = map[cell.y][cell.x-2]
+    }
 
-    if (north_neighbor == 0){
+    if (north_neighbor == 0) {
         valid_neighbors.push({x:cell.x, y:cell.y-2, dir:'n'})
     }
     if (south_neighbor == 0){
@@ -68,6 +91,24 @@ function get_valid_cell_neighbors(cell){
         valid_neighbors.push({x:cell.x-2, y:cell.y, dir:'w'})
     }
     return valid_neighbors
+}
+
+function dig_corridor(cell){
+    map[cell.y][cell.x] = 2
+    switch(cell.dir){
+        case 'n':
+            map[cell.y+1][cell.x] = 2
+            break;
+        case 's':
+            map[cell.y-1][cell.x] = 2
+            break;
+        case 'e':
+            map[cell.y][cell.x-1] = 2
+            break;
+        case 'w':
+            map[cell.y][cell.x-+1] = 2
+            break;
+    }
 }
 
 function make_corridors(starting_cell){
@@ -83,11 +124,16 @@ function make_corridors(starting_cell){
         let index = Math.floor(Math.random()*horizon.length)
         current_cell = horizon[index]
         horizon.splice(index, 1)
-        paintCorridor(current_cell)
-        let new_horizon = get_valid_cell_neighbors(current_cell)
-        for (let i = 0; i < new_horizon.length; i++){
-            paintFrontier(new_horizon[i])
+        if (map[current_cell.y][current_cell.x] == 0){
+            dig_corridor(current_cell)
+            paintCorridor(current_cell)
+            let new_horizon = get_valid_cell_neighbors(current_cell)
+            for (let i = 0; i < new_horizon.length; i++){
+                paintFrontier(new_horizon[i])
+            }
+            horizon = horizon.concat(new_horizon)
         }
+        
     }
 
 }
