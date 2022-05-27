@@ -46,6 +46,9 @@
 				for(let y = 1; y < total_y_cells-1; y += 2){
 					let found = false;
 					for (let x = 1; x < total_x_cells-1; x += 2){
+						if (map[y][x] != 0){
+							continue;
+						}
 						let horizon = get_valid_cell_neighbors({x:x, y:y})
 						if (horizon.length > 0){
 							found = true;
@@ -91,8 +94,6 @@
 						finished = true;
 					}
 				}
-				
-
 
 			}
 
