@@ -93,6 +93,35 @@ function get_valid_cell_neighbors(cell){
     return valid_neighbors
 }
 
+function get_valid_wall_teardown(x,y){
+    is_valid_connection = false
+    // Check vertical connection
+    if ((map[y-1][x] > 0 && map[y+1][x] > 0 && map[y-1][x] < 3 && map[y+1][x] < 3)){
+        let top = map[y-1][x]
+        let bottom = map[y+1][x]
+        if (top == 2 && top == bottom){
+            null;
+        } else {
+            //Mark as 3
+            map[y][x] = 3
+            is_valid_connection = true
+        }
+    }
+    // Check Horizontal Connection
+    if ((map[y][x-1] > 0 && map[y][x+1] > 0 && map[y][x-1] < 3 && map[y][x+1] < 3)){
+        let left = map[y][x-1]
+        let right = map[y][x+1]
+        if (left == 2 && left == right){
+            null;
+        } else {
+            //Mark as 3
+            map[y][x] = 3
+            is_valid_connection = true
+        }
+    }
+    return is_valid_connection
+}
+
 function dig_corridor(cell){
     map[cell.y][cell.x] = 2
     switch(cell.dir){
