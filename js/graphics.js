@@ -32,6 +32,11 @@ function paintCorridor(cell){
     }
 }
 
+function paintValidWallTeardown(x,y){
+    ctx.fillStyle = '#fcdebe'
+    ctx.fillRect(cell_x*x+3, cell_y*y+3, 4, 4)
+}
+
 function paintFrontier(cell){
     ctx.strokeStyle = '#3333AA';
     ctx.strokeRect(cell.x*cell_x, cell.y*cell_y, cell_x, cell_y);

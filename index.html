@@ -95,6 +95,20 @@
 					}
 				}
 
+				//Scan for room to corridor connections
+				for (let y = 1; y < map.length-1 ; y++){
+					for (let x = 1; x < map[0].length-1; x++){
+						if (map[y][x] != 0){
+							continue;
+						}
+						valid_connection = get_valid_wall_teardown(x,y)
+						if (valid_connection){
+							paintValidWallTeardown(x,y)
+						}
+					}
+				}
+
+
 			}
 
 			main()
