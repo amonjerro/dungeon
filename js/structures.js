@@ -4,10 +4,16 @@ var cell_y = 10;
 var total_y_cells = Math.floor(canvas.height / cell_y);
 var total_x_cells = Math.floor(canvas.width / cell_x);
 
+//Constants for less trouble
+const WALL_TILE = 0;
+const ROOM_TILE = 1;
+const CORRIDOR_TILE = 2;
+const CONNECTION_TILE = 3;
+
 function mapRoom(room){
     for (var i = room.y_coord; i < (room.y_coord+room.height);i++){
         for (var j = room.x_coord; j < (room.x_coord +room.width); j++){
-            map[i][j] = 1;
+            map[i][j] = ROOM_TILE;
         }
     }
 }
@@ -78,16 +84,16 @@ function get_valid_cell_neighbors(cell){
         west_neighbor = map[cell.y][cell.x-2]
     }
 
-    if (north_neighbor == 0) {
+    if (north_neighbor == WALL_TILE) {
         valid_neighbors.push({x:cell.x, y:cell.y-2, dir:'n'})
     }
-    if (south_neighbor == 0){
+    if (south_neighbor == WALL_TILE){
         valid_neighbors.push({x:cell.x, y:cell.y+2, dir:'s'})
     }
-    if (east_neighbor == 0){
+    if (east_neighbor == WALL_TILE){
         valid_neighbors.push({x:cell.x+2, y:cell.y, dir:'e'})
     }
-    if (west_neighbor == 0){
+    if (west_neighbor == WALL_TILE){
         valid_neighbors.push({x:cell.x-2, y:cell.y, dir:'w'})
     }
     return valid_neighbors
@@ -96,26 +102,32 @@ function get_valid_cell_neighbors(cell){
 function get_valid_wall_teardown(x,y){
     is_valid_connection = false
     // Check vertical connection
-    if ((map[y-1][x] > 0 && map[y+1][x] > 0 && map[y-1][x] < 3 && map[y+1][x] < 3)){
+    if (
+        (map[y-1][x] > WALL_TILE && map[y+1][x] > WALL_TILE) && 
+        (map[y-1][x] < CONNECTION_TILE && map[y+1][x] < CONNECTION_TILE)
+        ){
         let top = map[y-1][x]
         let bottom = map[y+1][x]
-        if (top == 2 && top == bottom){
+        if (top == CORRIDOR_TILE && top == bottom){
             null;
         } else {
             //Mark as 3
-            map[y][x] = 3
+            map[y][x] = CONNECTION_TILE
             is_valid_connection = true
         }
     }
     // Check Horizontal Connection
-    if ((map[y][x-1] > 0 && map[y][x+1] > 0 && map[y][x-1] < 3 && map[y][x+1] < 3)){
+    if (
+        (map[y][x-1] > WALL_TILE && map[y][x+1] > WALL_TILE) &&
+        (map[y][x-1] < CONNECTION_TILE && map[y][x+1] < CONNECTION_TILE)
+        ){
         let left = map[y][x-1]
         let right = map[y][x+1]
-        if (left == 2 && left == right){
+        if (left == CORRIDOR_TILE && left == right){
             null;
         } else {
             //Mark as 3
-            map[y][x] = 3
+            map[y][x] = CONNECTION_TILE
             is_valid_connection = true
         }
     }
@@ -123,19 +135,19 @@ function get_valid_wall_teardown(x,y){
 }
 
 function dig_corridor(cell){
-    map[cell.y][cell.x] = 2
+    map[cell.y][cell.x] = CORRIDOR_TILE
     switch(cell.dir){
         case 'n':
-            map[cell.y+1][cell.x] = 2
+            map[cell.y+1][cell.x] = CORRIDOR_TILE
             break;
         case 's':
-            map[cell.y-1][cell.x] = 2
+            map[cell.y-1][cell.x] = CORRIDOR_TILE
             break;
         case 'e':
-            map[cell.y][cell.x-1] = 2
+            map[cell.y][cell.x-1] = CORRIDOR_TILE
             break;
         case 'w':
-            map[cell.y][cell.x-+1] = 2
+            map[cell.y][cell.x-+1] = CORRIDOR_TILE
             break;
     }
 }
@@ -153,7 +165,7 @@ function make_corridors(starting_cell){
         let index = Math.floor(Math.random()*horizon.length)
         current_cell = horizon[index]
         horizon.splice(index, 1)
-        if (map[current_cell.y][current_cell.x] == 0){
+        if (map[current_cell.y][current_cell.x] == WALL_TILE){
             dig_corridor(current_cell)
             paintCorridor(current_cell)
             let new_horizon = get_valid_cell_neighbors(current_cell)
