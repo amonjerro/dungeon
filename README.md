@@ -5,8 +5,7 @@ The construction of the maze is based on Prim's algorithm [as explained](http://
 
 ## Current Sample Maze
 
-![image](https://user-images.githubusercontent.com/9394777/170625420-c7ac82f4-1dcf-4721-a057-da51224c32a0.png)
-
+![image](https://user-images.githubusercontent.com/9394777/171064377-64454770-98ac-483e-8089-ccf916c1319c.png)
 
 ## TO DO
 
