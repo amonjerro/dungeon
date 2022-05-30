@@ -1,6 +1,21 @@
+.horizontal-section{
+	max-width:50%;
+}
+
+#canvas-container, #visualization{
+	text-align:center;
+}
+
 canvas{
 	border:1px black solid;
 }
 .top-margin{
 	margin-top:20px;
+}
+.input-group{
+	display:inline-block;
+	min-width:49%
+}
+.input-group label{
+	display:block;
 }

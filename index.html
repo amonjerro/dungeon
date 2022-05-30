@@ -6,75 +6,95 @@
 		
 	</head>
 	<body>
-		<canvas width="500" height="500" id="canvas"></canvas>
-		<div class="top-margin">
-			<button onclick="toggleGrid()">Toggle Grid</button>
+		<div id="visualization" class="horizontal-section">
+			<div id="canvas-container">
+				<canvas width="490" height="490" id="canvas"></canvas>	
+			</div>
+			<div class="top-margin">
+				<button onclick="toggleGrid()">Toggle Grid</button>
+				<button onclick="main()">Regenerate</button>
+			</div>
+			<div class="top-margin" id="controls">
+				<div class="input-group">
+					<label for="minRoomWidth">Min Room Width: <span id="roomMinWidthValue">3</span></label>
+					<input type="range" min="3" max="11" step="2" value="3" id="minRoomWidth" name="minRoomWidth">
+				</div>
+				<div class="input-group">
+					<label for="minRoomHeight">Min Room Height: <span id="roomMinHeightValue">3</span></label>
+					<input type="range" min="3" max="11" step="2" value="3" id="minRoomHeight" name="minRoomHeight">
+				</div>
+				<div class="input-group">
+					<label for="maxRoomWidth">Max Room Width: <span id="roomMaxWidthValue">11</span></label>
+					<input type="range" min="5" max="15" step="2" value="11" id="maxRoomWidth" name="maxRoomWidth">
+				</div>
+				<div class="input-group">
+					<label for="maxRoomHeight">Max Room Height: <span id="roomMaxHeightValue">11</span></label>
+					<input type="range" min="5" max="15" step="2" value="11" id="maxRoomHeight" name="maxRoomHeight">
+				</div>
+			</div>
+		</div>
+		<div id="textOutput" class="horizontal-section scrollable">
+			
 		</div>
 		<script src="js/utils.js"></script>
-		<script src="js/structures.js"></script>
+		<script src="js/mapLogic.js"></script>
 		<script src="js/grid.js"></script>
 		<script src="js/graphics.js"></script>
 		<script>
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
-			var map = [];
-			var grid = false;
-
-			//Room stuff
-			var min_room = 4;
-			var max_room = 10;
-			var attempts = 200;
-			var room_array = [];
-
-			function pickStart(){
-				var x;
-				var y;
-				var not_placeable = true;
-				while (not_placeable){
-					x = randomOddIntFromInterval(1, total_x_cells-1);
-					y = randomOddIntFromInterval(1, total_y_cells-1);
-					if (map[y][x] === 0){
-						not_placeable = false;
-					}
-				}
-				map[y][x] = 2;
-				return {x:x, y:y};
-			}
-
-			function scanForNewSeeds(){
-				let seed = null
-				for(let y = 1; y < total_y_cells-1; y += 2){
-					let found = false;
-					for (let x = 1; x < total_x_cells-1; x += 2){
-						if (map[y][x] != 0){
-							continue;
-						}
-						let horizon = get_valid_cell_neighbors({x:x, y:y})
-						if (horizon.length > 0){
-							found = true;
-							seed = {x:x, y:y}
-							console.log(seed, horizon)
-							break;
-						}
-					}
-					if (found){
-						break;
-					}
-				}
-				
-				return seed
-			}
 			
+			//Slider Setup
+			var minRoomHeightSlider = document.getElementById('minRoomHeight')
+			var maxRoomHeightSlider = document.getElementById('maxRoomHeight')
+			var minRoomWidthSlider = document.getElementById('minRoomWidth')
+			var maxRoomWidthSlider = document.getElementById('maxRoomWidth')
 
-			// Initialize an empty map
-			for (var i = 0; i < total_y_cells; i++){
-				map.push([])
-				for (var j = 0; j < total_x_cells; j++){
-					map[i].push(0);
-				}
+			var minRoomWidthSpanElement = document.getElementById('roomMinWidthValue')
+			var maxRoomWidthSpanElement = document.getElementById('roomMaxWidthValue')
+			var minRoomHeightSpanElement = document.getElementById('roomMinHeightValue')
+			var maxRoomHeightSpanElement = document.getElementById('roomMaxHeightValue')
+
+			minRoomHeightSlider.oninput = function(){
+				minRoomHeightSpanElement.innerHTML = this.value
+				min_room_height = parseInt(this.value)
 			}
 
+			maxRoomHeightSlider.oninput = function(){
+				maxRoomHeightSpanElement.innerHTML = this.value
+				max_room_height = parseInt(this.value)
+			}
+
+			minRoomWidthSlider.oninput = function(){
+				minRoomWidthSpanElement.innerHTML = this.value
+				min_room_width = parseInt(this.value)
+			}
+
+			maxRoomWidthSlider.oninput = function(){
+				maxRoomWidthSpanElement.innerHTML = this.value
+				max_room_width = parseInt(this.value)
+			}
+
+			var map = [];
+			var grid = false
+			
+			//The main map creation function
 			function main(){
+				//Initialize the map
+				map = []
+				room_array = []
+
+				//Clear the Canvas
+				clearCanvas()
+
+				// Initialize an empty map
+				for (var i = 0; i < total_y_cells; i++){
+					map.push([])
+					for (var j = 0; j < total_x_cells; j++){
+						map[i].push(0);
+					}
+				}
+
 				// Establish the rooms
 				establish_rooms()
 
@@ -107,11 +127,11 @@
 						}
 					}
 				}
-
-
 			}
 
 			main()
+
+
 		</script>
 	</body>
 </html>
