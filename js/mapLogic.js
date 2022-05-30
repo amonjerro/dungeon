@@ -4,11 +4,58 @@ var cell_y = 10;
 var total_y_cells = Math.floor(canvas.height / cell_y);
 var total_x_cells = Math.floor(canvas.width / cell_x);
 
+//Room stuff
+var min_room_height = 3;
+var min_room_width = 3;
+var max_room_width = 11;
+var max_room_height = 11;
+var attempts = 200;
+
 //Constants for less trouble
 const WALL_TILE = 0;
 const ROOM_TILE = 1;
 const CORRIDOR_TILE = 2;
 const CONNECTION_TILE = 3;
+var room_array = [];
+
+function pickStart(){
+    var x;
+    var y;
+    var not_placeable = true;
+    while (not_placeable){
+        x = randomOddIntFromInterval(1, total_x_cells-1);
+        y = randomOddIntFromInterval(1, total_y_cells-1);
+        if (map[y][x] === 0){
+            not_placeable = false;
+        }
+    }
+    map[y][x] = 2;
+    return {x:x, y:y};
+}
+
+function scanForNewSeeds(){
+    let seed = null
+    for(let y = 1; y < total_y_cells-1; y += 2){
+        let found = false;
+        for (let x = 1; x < total_x_cells-1; x += 2){
+            if (map[y][x] != 0){
+                continue;
+            }
+            let horizon = get_valid_cell_neighbors({x:x, y:y})
+            if (horizon.length > 0){
+                found = true;
+                seed = {x:x, y:y}
+                console.log(seed, horizon)
+                break;
+            }
+        }
+        if (found){
+            break;
+        }
+    }
+    
+    return seed
+}
 
 function mapRoom(room){
     for (var i = room.y_coord; i < (room.y_coord+room.height);i++){
@@ -18,13 +65,13 @@ function mapRoom(room){
     }
 }
 
-function createRoom(min, max){
+function createRoom(){
     var room = {
-        width: randomOddIntFromInterval(min,max),
-        height: randomOddIntFromInterval(min,max)
+        width: randomOddIntFromInterval(min_room_width,max_room_width),
+        height: randomOddIntFromInterval(min_room_height,max_room_height)
     }
-    room.y_coord = randomOddIntFromInterval(1,total_y_cells-room.height-1);
-    room.x_coord = randomOddIntFromInterval(1,total_x_cells-room.width-1);
+    room.y_coord = randomOddIntFromInterval(1,total_y_cells-room.height-2);
+    room.x_coord = randomOddIntFromInterval(1,total_x_cells-room.width-2);
     return room;
 }
 
@@ -40,7 +87,7 @@ function establish_rooms(){
     var collision;
     for (var i = 0; i < attempts; i++){
         collision = false;
-        room = createRoom(min_room,max_room);
+        room = createRoom();
         for (var j = 0; j < room_array.length; j++){
             if(detectRoomCollision(room, room_array[j])){
                 collision = true;
