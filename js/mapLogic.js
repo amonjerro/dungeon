@@ -9,6 +9,7 @@ var min_room_height = 3;
 var min_room_width = 3;
 var max_room_width = 11;
 var max_room_height = 11;
+var max_room_doors = 3;
 var attempts = 200;
 
 //Constants for less trouble
@@ -16,6 +17,7 @@ const WALL_TILE = 0;
 const ROOM_TILE = 1;
 const CORRIDOR_TILE = 2;
 const CONNECTION_TILE = 3;
+const CONNECTED_TILE = 4;
 var room_array = [];
 
 function pickStart(){
@@ -45,7 +47,6 @@ function scanForNewSeeds(){
             if (horizon.length > 0){
                 found = true;
                 seed = {x:x, y:y}
-                console.log(seed, horizon)
                 break;
             }
         }
@@ -224,4 +225,67 @@ function make_corridors(starting_cell){
         
     }
 
+}
+
+function addRoomDoors(){
+    for(let i = 0; i < room_array.length; i++){
+        let current_room = room_array[i]
+        current_room.established_connections = 0
+        let candidates = []
+
+        //Populate the Candidates
+        for (let w = 0; w < current_room.width; w++){
+            //Iterate over vertical perimeter wall
+            if (w == 0 || w == current_room.width-1){
+                for (let h = 0; h < current_room.height; h++){
+                    if (map[current_room.y_coord+h][current_room.x_coord+w-1] == CONNECTED_TILE){
+                        current_room.established_connections++;
+                    } else if (map[current_room.y_coord+h][current_room.x_coord+w-1] == CONNECTION_TILE) {
+                        candidates.push({
+                            x:current_room.x_coord+w-1,
+                            y:current_room.y_coord+h
+                        })
+                    } else if(map[current_room.y_coord+h][current_room.x_coord+w+1] == CONNECTED_TILE) {
+                        current_room.established_connections++;
+                    } else if (map[current_room.y_coord+h][current_room.x_coord+w+1] == CONNECTION_TILE){
+                        candidates.push({
+                            x:current_room.x_coord+w+1,
+                            y:current_room.y_coord+h
+                        })
+                    }
+                }
+            }
+        
+            //Check top
+            if (map[current_room.y_coord-1][current_room.x_coord+w] == CONNECTED_TILE){
+                current_room.established_connections++
+
+            } else if (map[current_room.y_coord-1][current_room.x_coord+w] == CONNECTION_TILE){
+                candidates.push({
+                    x:current_room.x_coord+w,
+                    y:current_room.y_coord-1
+                })
+            }
+            //Check bottom
+            bottom_margin = current_room.y_coord+current_room.height
+            if (map[bottom_margin][current_room.x_coord+w] == CONNECTED_TILE){
+                current_room.established_connections++
+
+            } else if (map[bottom_margin][current_room.x_coord+w] == CONNECTION_TILE){
+                candidates.push({
+                    x:current_room.x_coord+w,
+                    y:bottom_margin
+                })
+            }
+        }
+
+        //Add new connections until the limit is reached
+        while(current_room.established_connections < max_room_doors){
+            let candidate = candidates.splice(randomIntFromInterval(0, candidates.length-1),1)[0]
+            map[candidate.y][candidate.x] = CONNECTED_TILE
+            paintConnections(candidate.x, candidate.y)
+            current_room.established_connections++
+        }
+
+    }
 }

@@ -31,6 +31,10 @@
 					<label for="maxRoomHeight">Max Room Height: <span id="roomMaxHeightValue">11</span></label>
 					<input type="range" min="5" max="15" step="2" value="11" id="maxRoomHeight" name="maxRoomHeight">
 				</div>
+				<div class="input-group">
+					<label for="maxRoomDoors">Max Room Doors: <span id="maxRoomDoorsSpan">3</span></label>
+					<input type="range" min="1" max="5" step="2" value="11" id="maxDoors" name="maxDoors">
+				</div>
 			</div>
 		</div>
 		<div id="textOutput" class="horizontal-section scrollable">
@@ -49,11 +53,13 @@
 			var maxRoomHeightSlider = document.getElementById('maxRoomHeight')
 			var minRoomWidthSlider = document.getElementById('minRoomWidth')
 			var maxRoomWidthSlider = document.getElementById('maxRoomWidth')
+			var maxDoorSlider = document.getElementById('maxDoors')
 
 			var minRoomWidthSpanElement = document.getElementById('roomMinWidthValue')
 			var maxRoomWidthSpanElement = document.getElementById('roomMaxWidthValue')
 			var minRoomHeightSpanElement = document.getElementById('roomMinHeightValue')
 			var maxRoomHeightSpanElement = document.getElementById('roomMaxHeightValue')
+			var maxDoorSpan = document.getElementById('maxRoomDoorsSpan')
 
 			minRoomHeightSlider.oninput = function(){
 				minRoomHeightSpanElement.innerHTML = this.value
@@ -73,6 +79,11 @@
 			maxRoomWidthSlider.oninput = function(){
 				maxRoomWidthSpanElement.innerHTML = this.value
 				max_room_width = parseInt(this.value)
+			}
+
+			maxDoorSlider.oninput = function(){
+				maxDoorSpan.innerHTML = this.value
+				max_room_doors = parseInt(this.value)
 			}
 
 			var map = [];
@@ -127,6 +138,7 @@
 						}
 					}
 				}
+				addRoomDoors()
 			}
 
 			main()

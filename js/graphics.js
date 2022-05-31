@@ -42,6 +42,13 @@ function paintFrontier(cell){
     ctx.strokeRect(cell.x*cell_x, cell.y*cell_y, cell_x, cell_y);
 }
 
+function paintConnections(x,y){
+    ctx.fillStyle = '#333388'
+    ctx.strokeStyle = '#3333AA'
+    ctx.fillRect(x*cell_x,y*cell_y, cell_x, cell_y)
+    ctx.strokeRect(x*cell_x,y*cell_y, cell_x, cell_y);
+}
+
 function clearCanvas(){
     ctx.clearRect(0,0, canvas.width, canvas.height)
 }
