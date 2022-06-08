@@ -5,11 +5,12 @@ var total_y_cells = Math.floor(canvas.height / cell_y);
 var total_x_cells = Math.floor(canvas.width / cell_x);
 
 //Room stuff
-var min_room_height = 3;
-var min_room_width = 3;
-var max_room_width = 11;
-var max_room_height = 11;
-var max_room_doors = 3;
+var minRoomHeight = 3;
+var minRoomWidth = 3;
+var maxRoomWidth = 11;
+var maxRoomHeight = 11;
+var maxRoomDoors = 3;
+var maxSparseness = 75;
 var attempts = 200;
 
 //Constants for less trouble
@@ -22,7 +23,7 @@ const FLOOD_FILLED = 5;
 const PRE_FILL = 6
 var room_array = [];
 
-function pickStart(){
+function pick_start(){
     var x;
     var y;
     var not_placeable = true;
@@ -37,7 +38,7 @@ function pickStart(){
     return {x:x, y:y};
 }
 
-function scanForNewSeeds(){
+function scan_for_new_seeds(){
     let seed = null
     for(let y = 1; y < total_y_cells-1; y += 2){
         let found = false;
@@ -60,7 +61,7 @@ function scanForNewSeeds(){
     return seed
 }
 
-function mapRoom(room){
+function map_room(room){
     for (var i = room.y_coord; i < (room.y_coord+room.height);i++){
         for (var j = room.x_coord; j < (room.x_coord +room.width); j++){
             map[i][j] = ROOM_TILE;
@@ -68,17 +69,17 @@ function mapRoom(room){
     }
 }
 
-function createRoom(){
+function create_room(){
     var room = {
-        width: randomOddIntFromInterval(min_room_width,max_room_width),
-        height: randomOddIntFromInterval(min_room_height,max_room_height)
+        width: randomOddIntFromInterval(minRoomWidth,maxRoomWidth),
+        height: randomOddIntFromInterval(minRoomHeight,maxRoomHeight)
     }
     room.y_coord = randomOddIntFromInterval(1,total_y_cells-room.height-2);
     room.x_coord = randomOddIntFromInterval(1,total_x_cells-room.width-2);
     return room;
 }
 
-function detectRoomCollision(room_a,room_b){
+function detect_room_collision(room_a,room_b){
     return (room_a.x_coord < room_b.x_coord + room_b.width &&
        room_a.x_coord + room_a.width > room_b.x_coord &&
        room_a.y_coord < room_b.y_coord + room_b.height &&
@@ -90,15 +91,15 @@ function establish_rooms(){
     var collision;
     for (var i = 0; i < attempts; i++){
         collision = false;
-        room = createRoom();
+        room = create_room();
         for (var j = 0; j < room_array.length; j++){
-            if(detectRoomCollision(room, room_array[j])){
+            if(detect_room_collision(room, room_array[j])){
                 collision = true;
                 break;
             }
         }
         if (!collision){
-            mapRoom(room);
+            map_room(room);
             room_array.push(room);
         }
     }
@@ -222,7 +223,7 @@ function make_corridors(starting_cell){
     
 }
 
-function addRoomDoors(){
+function add_room_doors(){
     for(let i = 0; i < room_array.length; i++){
         let current_room = room_array[i]
         current_room.established_connections = 0
@@ -275,7 +276,7 @@ function addRoomDoors(){
         }
 
         //Add new connections until the limit is reached
-        while(current_room.established_connections < max_room_doors){
+        while(current_room.established_connections < maxRoomDoors){
             let candidate = candidates.splice(randomIntFromInterval(0, candidates.length-1),1)[0]
             map[candidate.y][candidate.x] = CONNECTED_TILE
             current_room.established_connections++
@@ -295,10 +296,10 @@ function prep_map(){
             }
         }
     }
-    floodFill()
+    flood_fill()
 }
 
-function floodFill(){
+function flood_fill(){
     let starting_flood = {
         x:room_array[0].x_coord,
         y:room_array[0].y_coord
@@ -311,5 +312,63 @@ function floodFill(){
         horizon = horizon.concat(new_horizon)
     }
 
-    paintMap()
+    detect_dead_ends()
+}
+
+function is_dead_end(cell){
+    let neighbors = get_valid_cell_neighbors(cell, 1, FLOOD_FILLED)
+    return [neighbors.length == 1, neighbors]
+}
+
+function detect_dead_ends(){
+    let deadEnds = []
+    let sparsenessCounter = 0
+    for (let y = 1; y < map.length-1; y++){
+        for (let x = 1; x < map[0].length-1; x++){
+            if(map[y][x] != WALL_TILE) {
+                let isPossibleDeadEnd = is_dead_end({x:x, y:y})
+                if(isPossibleDeadEnd[0]){
+                    deadEnds.push({x:x, y:y, dir:isPossibleDeadEnd[1][0].dir})
+                }
+            }
+        }
+    }
+
+    while(sparsenessCounter < maxSparseness && deadEnds.length > 0){
+        let deadEnd = deadEnds.pop()
+        let isPossibleDeadEnd = null
+        map[deadEnd.y][deadEnd.x] = WALL_TILE;
+        //Evaluate if neighbor is now a dead end
+        switch(deadEnd.dir){
+            case 'n':
+                isPossibleDeadEnd = is_dead_end({x:deadEnd.x, y:deadEnd.y-1})
+                if (isPossibleDeadEnd[0]){
+                    deadEnds.push({x:deadEnd.x, y:deadEnd.y-1, dir:isPossibleDeadEnd[1][0].dir})
+                    sparsenessCounter++;
+                }
+                break;
+            case 's':
+                isPossibleDeadEnd = is_dead_end({x:deadEnd.x, y:deadEnd.y+1})
+                if (isPossibleDeadEnd[0]){
+                    deadEnds.push({x:deadEnd.x, y:deadEnd.y+1, dir:isPossibleDeadEnd[1][0].dir})
+                    sparsenessCounter++;
+                }
+                break;
+            case 'e':
+                isPossibleDeadEnd = is_dead_end({x:deadEnd.x+1, y:deadEnd.y})
+                if (isPossibleDeadEnd[0]){
+                    deadEnds.push({x:deadEnd.x+1, y:deadEnd.y, dir:isPossibleDeadEnd[1][0].dir})
+                    sparsenessCounter++;
+                }
+                break;
+            case 'w':
+                isPossibleDeadEnd = is_dead_end({x:deadEnd.x-1, y:deadEnd.y})
+                if (isPossibleDeadEnd[0]){
+                    deadEnds.push({x:deadEnd.x-1, y:deadEnd.y, dir:isPossibleDeadEnd[1][0].dir})
+                    sparsenessCounter++;
+                }
+                break;
+        }
+    }
+    paint_map()
 }

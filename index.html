@@ -33,7 +33,11 @@
 				</div>
 				<div class="input-group">
 					<label for="maxRoomDoors">Max Room Doors: <span id="maxRoomDoorsSpan">3</span></label>
-					<input type="range" min="1" max="5" step="2" value="11" id="maxDoors" name="maxDoors">
+					<input type="range" min="1" max="5" step="1" value="3" id="maxDoors" name="maxDoors">
+				</div>
+				<div class="input-group">
+					<label for="maxSparseness">Max Sparseness: <span id="maxSparsenessSpan">25</span></label>
+					<input type="range" min="50" max="200" step="5" value="75" id="maxSparseness" name="maxSparseness">
 				</div>
 			</div>
 		</div>
@@ -54,36 +58,43 @@
 			var minRoomWidthSlider = document.getElementById('minRoomWidth')
 			var maxRoomWidthSlider = document.getElementById('maxRoomWidth')
 			var maxDoorSlider = document.getElementById('maxDoors')
+			var maxSparsenessSlider = document.getElementById('maxSparseness')
 
 			var minRoomWidthSpanElement = document.getElementById('roomMinWidthValue')
 			var maxRoomWidthSpanElement = document.getElementById('roomMaxWidthValue')
 			var minRoomHeightSpanElement = document.getElementById('roomMinHeightValue')
 			var maxRoomHeightSpanElement = document.getElementById('roomMaxHeightValue')
 			var maxDoorSpan = document.getElementById('maxRoomDoorsSpan')
+			var maxSparsenessSpan = document.getElementById('maxSparsenessSpan')
 
 			minRoomHeightSlider.oninput = function(){
 				minRoomHeightSpanElement.innerHTML = this.value
-				min_room_height = parseInt(this.value)
+				minRoomHeight = parseInt(this.value)
 			}
 
 			maxRoomHeightSlider.oninput = function(){
 				maxRoomHeightSpanElement.innerHTML = this.value
-				max_room_height = parseInt(this.value)
+				maxRoomHeight = parseInt(this.value)
 			}
 
 			minRoomWidthSlider.oninput = function(){
 				minRoomWidthSpanElement.innerHTML = this.value
-				min_room_width = parseInt(this.value)
+				minRoomWidth = parseInt(this.value)
 			}
 
 			maxRoomWidthSlider.oninput = function(){
 				maxRoomWidthSpanElement.innerHTML = this.value
-				max_room_width = parseInt(this.value)
+				maxRoomWidth = parseInt(this.value)
 			}
 
 			maxDoorSlider.oninput = function(){
 				maxDoorSpan.innerHTML = this.value
-				max_room_doors = parseInt(this.value)
+				maxRoomDoors = parseInt(this.value)
+			}
+
+			maxSparsenessSlider.oninput = function(){
+				maxSparsenessSpan.innerHTML = this.value
+				maxSparseness = parseInt(this.value)
 			}
 
 			var map = [];
@@ -96,7 +107,7 @@
 				room_array = []
 
 				//Clear the Canvas
-				clearCanvas()
+				clear_canvas()
 
 				// Initialize an empty map
 				for (var i = 0; i < total_y_cells; i++){
@@ -111,17 +122,14 @@
 				let finished = false;
 
 				// Start creating the corridors
-				var current_cell = pickStart();
+				var current_cell = pick_start();
 				while(!finished){
 					make_corridors(current_cell)
-					current_cell = scanForNewSeeds()
+					current_cell = scan_for_new_seeds()
 					if (current_cell == null){
 						finished = true;
 					}
 				}
-
-
-				
 
 				//Scan for room to corridor connections
 				for (let y = 1; y < map.length-1 ; y++){
@@ -133,7 +141,7 @@
 					}
 				}
 
-				addRoomDoors()
+				add_room_doors()
 			}
 
 			main()
