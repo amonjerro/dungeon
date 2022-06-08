@@ -112,7 +112,6 @@
 
 				// Start creating the corridors
 				var current_cell = pickStart();
-				console.log('before while')
 				while(!finished){
 					make_corridors(current_cell)
 					current_cell = scanForNewSeeds()
@@ -120,7 +119,7 @@
 						finished = true;
 					}
 				}
-				console.log('after while')
+
 
 				
 

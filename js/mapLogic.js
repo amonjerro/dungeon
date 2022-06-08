@@ -19,6 +19,7 @@ const CORRIDOR_TILE = 2;
 const CONNECTION_TILE = 3;
 const CONNECTED_TILE = 4;
 const FLOOD_FILLED = 5;
+const PRE_FILL = 6
 var room_array = [];
 
 function pickStart(){
@@ -44,7 +45,7 @@ function scanForNewSeeds(){
             if (map[y][x] != WALL_TILE){
                 continue;
             }
-            let horizon = get_valid_cell_neighbors({x:x, y:y})
+            let horizon = get_valid_cell_neighbors({x:x, y:y}, 2, WALL_TILE)
             if (horizon.length > 0){
                 found = true;
                 seed = {x:x, y:y}
@@ -113,40 +114,41 @@ function check_map_validity(x,y){
     return true
 }
 
-function get_valid_cell_neighbors(cell){
+function get_valid_cell_neighbors(cell, distance, criterion){
     let valid_neighbors = []
     
     let north_neighbor = null
-    if(check_map_validity(cell.x, cell.y-2)){
-        north_neighbor = map[cell.y-2][cell.x]
+    if(check_map_validity(cell.x, cell.y-distance)){
+        north_neighbor = map[cell.y-distance][cell.x]
     }
     let south_neighbor = null
-    if(check_map_validity(cell.x, cell.y+2)){
-        south_neighbor = map[cell.y+2][cell.x]
+    if(check_map_validity(cell.x, cell.y+distance)){
+        south_neighbor = map[cell.y+distance][cell.x]
     }
     let east_neighbor = null
-    if(check_map_validity(cell.x+2, cell.y)){
-        east_neighbor = map[cell.y][cell.x+2]
+    if(check_map_validity(cell.x+distance, cell.y)){
+        east_neighbor = map[cell.y][cell.x+distance]
     }
     let west_neighbor = null
-    if(check_map_validity(cell.x-2, cell.y)){
-        west_neighbor = map[cell.y][cell.x-2]
+    if(check_map_validity(cell.x-distance, cell.y)){
+        west_neighbor = map[cell.y][cell.x-distance]
     }
 
-    if (north_neighbor == WALL_TILE) {
-        valid_neighbors.push({x:cell.x, y:cell.y-2, dir:'n'})
+    if (north_neighbor == criterion) {
+        valid_neighbors.push({x:cell.x, y:cell.y-distance, dir:'n'})
     }
-    if (south_neighbor == WALL_TILE){
-        valid_neighbors.push({x:cell.x, y:cell.y+2, dir:'s'})
+    if (south_neighbor == criterion){
+        valid_neighbors.push({x:cell.x, y:cell.y+distance, dir:'s'})
     }
-    if (east_neighbor == WALL_TILE){
-        valid_neighbors.push({x:cell.x+2, y:cell.y, dir:'e'})
+    if (east_neighbor == criterion){
+        valid_neighbors.push({x:cell.x+distance, y:cell.y, dir:'e'})
     }
-    if (west_neighbor == WALL_TILE){
-        valid_neighbors.push({x:cell.x-2, y:cell.y, dir:'w'})
+    if (west_neighbor == criterion){
+        valid_neighbors.push({x:cell.x-distance, y:cell.y, dir:'w'})
     }
     return valid_neighbors
 }
+
 
 function get_valid_wall_teardown(x,y){
     is_valid_connection = false
@@ -204,7 +206,7 @@ function dig_corridor(cell){
 function make_corridors(starting_cell){
     let horizon = []
     let current_cell = starting_cell
-    horizon = get_valid_cell_neighbors(current_cell)
+    horizon = get_valid_cell_neighbors(current_cell, 2, WALL_TILE)
 
     while (horizon.length > 0){
         let index = Math.floor(Math.random()*horizon.length)
@@ -212,7 +214,7 @@ function make_corridors(starting_cell){
         horizon.splice(index, 1)
         if (map[current_cell.y][current_cell.x] == WALL_TILE){
             dig_corridor(current_cell)
-            let new_horizon = get_valid_cell_neighbors(current_cell)
+            let new_horizon = get_valid_cell_neighbors(current_cell, 2, WALL_TILE)
             horizon = horizon.concat(new_horizon)
         }
         
@@ -280,11 +282,20 @@ function addRoomDoors(){
         }
 
     }
-    floodFill()
+    prep_map()
 }
 
-function floodFillNeighbors(cell){
-    return []
+function prep_map(){
+    for (let y = 0; y < map.length; y++){
+        for (let x = 0; x < map[0].length; x++){
+            if (map[y][x] == WALL_TILE || map[y][x] == CONNECTION_TILE){
+                map[y][x] = WALL_TILE
+            } else {
+                map[y][x] = PRE_FILL
+            }
+        }
+    }
+    floodFill()
 }
 
 function floodFill(){
@@ -292,12 +303,11 @@ function floodFill(){
         x:room_array[0].x_coord,
         y:room_array[0].y_coord
     }
-    console.log(starting_flood)
-    let horizon = floodFillNeighbors(starting_flood)
+    let horizon = get_valid_cell_neighbors(starting_flood, 1, PRE_FILL)
     while(horizon.length > 0){
         let current_cell = horizon.pop()
         map[current_cell.y][current_cell.x] = FLOOD_FILLED
-        let new_horizon = floodFillNeighbors(current_cell)
+        let new_horizon = get_valid_cell_neighbors(current_cell, 1, PRE_FILL)
         horizon = horizon.concat(new_horizon)
     }
 

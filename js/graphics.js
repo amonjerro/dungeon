@@ -1,3 +1,12 @@
+COLOR_MAP = [
+    "#000000",
+    "#ffffff",
+    "#33AA33",
+    '#878733',
+    '#338787',
+    '#5555BB'
+]
+
 
 function paintRoom(room){
     // ctx.fillRect(room.x_coord*cell_x,room.y_coord*cell_y,room.width*cell_x,room.height*cell_y);
@@ -43,11 +52,7 @@ function paintFrontier(cell){
 }
 
 function paintCell(x, y, type){
-    if (type == WALL_TILE || type == CONNECTION_TILE){
-        ctx.fillStyle = '#000000'
-    } else {
-        ctx.fillStyle = '#5555BB'
-    }
+    ctx.fillStyle = COLOR_MAP[type]
     ctx.fillRect(x*cell_x,y*cell_y, cell_x, cell_y)
 }
 
