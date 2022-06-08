@@ -9,8 +9,8 @@ The construction of the maze is based on Prim's algorithm [as explained](http://
 
 ## TO DO
 
-- [ ] Shave off useless corridors
-- [ ] Connect corridors with rooms
+- [X] Shave off useless corridors
+- [X] Connect corridors with rooms
 - [ ] Revamp graphics
 - [ ] Procedural room contents
 - [ ] Simple dungeon stories?
