@@ -42,11 +42,21 @@ function paintFrontier(cell){
     ctx.strokeRect(cell.x*cell_x, cell.y*cell_y, cell_x, cell_y);
 }
 
-function paintConnections(x,y){
-    ctx.fillStyle = '#333388'
-    ctx.strokeStyle = '#3333AA'
+function paintCell(x, y, type){
+    if (type == WALL_TILE || type == CONNECTION_TILE){
+        ctx.fillStyle = '#000000'
+    } else {
+        ctx.fillStyle = '#5555BB'
+    }
     ctx.fillRect(x*cell_x,y*cell_y, cell_x, cell_y)
-    ctx.strokeRect(x*cell_x,y*cell_y, cell_x, cell_y);
+}
+
+function paintMap(){
+    for (let y = 0; y < map.length; y++){
+        for (let x = 0; x < map[0].length; x++){
+            paintCell(x, y, map[y][x])
+        }
+    }
 }
 
 function clearCanvas(){

@@ -18,6 +18,7 @@ const ROOM_TILE = 1;
 const CORRIDOR_TILE = 2;
 const CONNECTION_TILE = 3;
 const CONNECTED_TILE = 4;
+const FLOOD_FILLED = 5;
 var room_array = [];
 
 function pickStart(){
@@ -27,7 +28,7 @@ function pickStart(){
     while (not_placeable){
         x = randomOddIntFromInterval(1, total_x_cells-1);
         y = randomOddIntFromInterval(1, total_y_cells-1);
-        if (map[y][x] === 0){
+        if (map[y][x] == WALL_TILE){
             not_placeable = false;
         }
     }
@@ -40,7 +41,7 @@ function scanForNewSeeds(){
     for(let y = 1; y < total_y_cells-1; y += 2){
         let found = false;
         for (let x = 1; x < total_x_cells-1; x += 2){
-            if (map[y][x] != 0){
+            if (map[y][x] != WALL_TILE){
                 continue;
             }
             let horizon = get_valid_cell_neighbors({x:x, y:y})
@@ -195,7 +196,7 @@ function dig_corridor(cell){
             map[cell.y][cell.x-1] = CORRIDOR_TILE
             break;
         case 'w':
-            map[cell.y][cell.x-+1] = CORRIDOR_TILE
+            map[cell.y][cell.x+1] = CORRIDOR_TILE
             break;
     }
 }
@@ -203,11 +204,7 @@ function dig_corridor(cell){
 function make_corridors(starting_cell){
     let horizon = []
     let current_cell = starting_cell
-    paintCorridor(current_cell)
     horizon = get_valid_cell_neighbors(current_cell)
-    for (let i = 0; i < horizon.length; i++){
-        paintFrontier(horizon[i])
-    }
 
     while (horizon.length > 0){
         let index = Math.floor(Math.random()*horizon.length)
@@ -215,16 +212,12 @@ function make_corridors(starting_cell){
         horizon.splice(index, 1)
         if (map[current_cell.y][current_cell.x] == WALL_TILE){
             dig_corridor(current_cell)
-            paintCorridor(current_cell)
             let new_horizon = get_valid_cell_neighbors(current_cell)
-            for (let i = 0; i < new_horizon.length; i++){
-                paintFrontier(new_horizon[i])
-            }
             horizon = horizon.concat(new_horizon)
         }
         
     }
-
+    
 }
 
 function addRoomDoors(){
@@ -283,9 +276,30 @@ function addRoomDoors(){
         while(current_room.established_connections < max_room_doors){
             let candidate = candidates.splice(randomIntFromInterval(0, candidates.length-1),1)[0]
             map[candidate.y][candidate.x] = CONNECTED_TILE
-            paintConnections(candidate.x, candidate.y)
             current_room.established_connections++
         }
 
     }
+    floodFill()
+}
+
+function floodFillNeighbors(cell){
+    return []
+}
+
+function floodFill(){
+    let starting_flood = {
+        x:room_array[0].x_coord,
+        y:room_array[0].y_coord
+    }
+    console.log(starting_flood)
+    let horizon = floodFillNeighbors(starting_flood)
+    while(horizon.length > 0){
+        let current_cell = horizon.pop()
+        map[current_cell.y][current_cell.x] = FLOOD_FILLED
+        let new_horizon = floodFillNeighbors(current_cell)
+        horizon = horizon.concat(new_horizon)
+    }
+
+    paintMap()
 }

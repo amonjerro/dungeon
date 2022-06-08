@@ -108,16 +108,11 @@
 
 				// Establish the rooms
 				establish_rooms()
-
-				// Paint the rooms
-				for (var i = 0; i < room_array.length; i++){
-					paintRoom(room_array[i]);
-				}
-
 				let finished = false;
 
 				// Start creating the corridors
 				var current_cell = pickStart();
+				console.log('before while')
 				while(!finished){
 					make_corridors(current_cell)
 					current_cell = scanForNewSeeds()
@@ -125,19 +120,20 @@
 						finished = true;
 					}
 				}
+				console.log('after while')
+
+				
 
 				//Scan for room to corridor connections
 				for (let y = 1; y < map.length-1 ; y++){
 					for (let x = 1; x < map[0].length-1; x++){
-						if (map[y][x] != 0){
+						if (map[y][x] != WALL_TILE){
 							continue;
 						}
 						valid_connection = get_valid_wall_teardown(x,y)
-						if (valid_connection){
-							paintValidWallTeardown(x,y)
-						}
 					}
 				}
+
 				addRoomDoors()
 			}
 
