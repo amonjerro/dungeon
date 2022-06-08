@@ -9,6 +9,7 @@ var min_room_height = 3;
 var min_room_width = 3;
 var max_room_width = 11;
 var max_room_height = 11;
+var max_room_doors = 3;
 var attempts = 200;
 
 //Constants for less trouble
@@ -16,6 +17,9 @@ const WALL_TILE = 0;
 const ROOM_TILE = 1;
 const CORRIDOR_TILE = 2;
 const CONNECTION_TILE = 3;
+const CONNECTED_TILE = 4;
+const FLOOD_FILLED = 5;
+const PRE_FILL = 6
 var room_array = [];
 
 function pickStart(){
@@ -25,7 +29,7 @@ function pickStart(){
     while (not_placeable){
         x = randomOddIntFromInterval(1, total_x_cells-1);
         y = randomOddIntFromInterval(1, total_y_cells-1);
-        if (map[y][x] === 0){
+        if (map[y][x] == WALL_TILE){
             not_placeable = false;
         }
     }
@@ -38,14 +42,13 @@ function scanForNewSeeds(){
     for(let y = 1; y < total_y_cells-1; y += 2){
         let found = false;
         for (let x = 1; x < total_x_cells-1; x += 2){
-            if (map[y][x] != 0){
+            if (map[y][x] != WALL_TILE){
                 continue;
             }
-            let horizon = get_valid_cell_neighbors({x:x, y:y})
+            let horizon = get_valid_cell_neighbors({x:x, y:y}, 2, WALL_TILE)
             if (horizon.length > 0){
                 found = true;
                 seed = {x:x, y:y}
-                console.log(seed, horizon)
                 break;
             }
         }
@@ -111,40 +114,41 @@ function check_map_validity(x,y){
     return true
 }
 
-function get_valid_cell_neighbors(cell){
+function get_valid_cell_neighbors(cell, distance, criterion){
     let valid_neighbors = []
     
     let north_neighbor = null
-    if(check_map_validity(cell.x, cell.y-2)){
-        north_neighbor = map[cell.y-2][cell.x]
+    if(check_map_validity(cell.x, cell.y-distance)){
+        north_neighbor = map[cell.y-distance][cell.x]
     }
     let south_neighbor = null
-    if(check_map_validity(cell.x, cell.y+2)){
-        south_neighbor = map[cell.y+2][cell.x]
+    if(check_map_validity(cell.x, cell.y+distance)){
+        south_neighbor = map[cell.y+distance][cell.x]
     }
     let east_neighbor = null
-    if(check_map_validity(cell.x+2, cell.y)){
-        east_neighbor = map[cell.y][cell.x+2]
+    if(check_map_validity(cell.x+distance, cell.y)){
+        east_neighbor = map[cell.y][cell.x+distance]
     }
     let west_neighbor = null
-    if(check_map_validity(cell.x-2, cell.y)){
-        west_neighbor = map[cell.y][cell.x-2]
+    if(check_map_validity(cell.x-distance, cell.y)){
+        west_neighbor = map[cell.y][cell.x-distance]
     }
 
-    if (north_neighbor == WALL_TILE) {
-        valid_neighbors.push({x:cell.x, y:cell.y-2, dir:'n'})
+    if (north_neighbor == criterion) {
+        valid_neighbors.push({x:cell.x, y:cell.y-distance, dir:'n'})
     }
-    if (south_neighbor == WALL_TILE){
-        valid_neighbors.push({x:cell.x, y:cell.y+2, dir:'s'})
+    if (south_neighbor == criterion){
+        valid_neighbors.push({x:cell.x, y:cell.y+distance, dir:'s'})
     }
-    if (east_neighbor == WALL_TILE){
-        valid_neighbors.push({x:cell.x+2, y:cell.y, dir:'e'})
+    if (east_neighbor == criterion){
+        valid_neighbors.push({x:cell.x+distance, y:cell.y, dir:'e'})
     }
-    if (west_neighbor == WALL_TILE){
-        valid_neighbors.push({x:cell.x-2, y:cell.y, dir:'w'})
+    if (west_neighbor == criterion){
+        valid_neighbors.push({x:cell.x-distance, y:cell.y, dir:'w'})
     }
     return valid_neighbors
 }
+
 
 function get_valid_wall_teardown(x,y){
     is_valid_connection = false
@@ -194,7 +198,7 @@ function dig_corridor(cell){
             map[cell.y][cell.x-1] = CORRIDOR_TILE
             break;
         case 'w':
-            map[cell.y][cell.x-+1] = CORRIDOR_TILE
+            map[cell.y][cell.x+1] = CORRIDOR_TILE
             break;
     }
 }
@@ -202,11 +206,7 @@ function dig_corridor(cell){
 function make_corridors(starting_cell){
     let horizon = []
     let current_cell = starting_cell
-    paintCorridor(current_cell)
-    horizon = get_valid_cell_neighbors(current_cell)
-    for (let i = 0; i < horizon.length; i++){
-        paintFrontier(horizon[i])
-    }
+    horizon = get_valid_cell_neighbors(current_cell, 2, WALL_TILE)
 
     while (horizon.length > 0){
         let index = Math.floor(Math.random()*horizon.length)
@@ -214,14 +214,102 @@ function make_corridors(starting_cell){
         horizon.splice(index, 1)
         if (map[current_cell.y][current_cell.x] == WALL_TILE){
             dig_corridor(current_cell)
-            paintCorridor(current_cell)
-            let new_horizon = get_valid_cell_neighbors(current_cell)
-            for (let i = 0; i < new_horizon.length; i++){
-                paintFrontier(new_horizon[i])
-            }
+            let new_horizon = get_valid_cell_neighbors(current_cell, 2, WALL_TILE)
             horizon = horizon.concat(new_horizon)
         }
         
     }
+    
+}
 
+function addRoomDoors(){
+    for(let i = 0; i < room_array.length; i++){
+        let current_room = room_array[i]
+        current_room.established_connections = 0
+        let candidates = []
+
+        //Populate the Candidates
+        for (let w = 0; w < current_room.width; w++){
+            //Iterate over vertical perimeter wall
+            if (w == 0 || w == current_room.width-1){
+                for (let h = 0; h < current_room.height; h++){
+                    if (map[current_room.y_coord+h][current_room.x_coord+w-1] == CONNECTED_TILE){
+                        current_room.established_connections++;
+                    } else if (map[current_room.y_coord+h][current_room.x_coord+w-1] == CONNECTION_TILE) {
+                        candidates.push({
+                            x:current_room.x_coord+w-1,
+                            y:current_room.y_coord+h
+                        })
+                    } else if(map[current_room.y_coord+h][current_room.x_coord+w+1] == CONNECTED_TILE) {
+                        current_room.established_connections++;
+                    } else if (map[current_room.y_coord+h][current_room.x_coord+w+1] == CONNECTION_TILE){
+                        candidates.push({
+                            x:current_room.x_coord+w+1,
+                            y:current_room.y_coord+h
+                        })
+                    }
+                }
+            }
+        
+            //Check top
+            if (map[current_room.y_coord-1][current_room.x_coord+w] == CONNECTED_TILE){
+                current_room.established_connections++
+
+            } else if (map[current_room.y_coord-1][current_room.x_coord+w] == CONNECTION_TILE){
+                candidates.push({
+                    x:current_room.x_coord+w,
+                    y:current_room.y_coord-1
+                })
+            }
+            //Check bottom
+            bottom_margin = current_room.y_coord+current_room.height
+            if (map[bottom_margin][current_room.x_coord+w] == CONNECTED_TILE){
+                current_room.established_connections++
+
+            } else if (map[bottom_margin][current_room.x_coord+w] == CONNECTION_TILE){
+                candidates.push({
+                    x:current_room.x_coord+w,
+                    y:bottom_margin
+                })
+            }
+        }
+
+        //Add new connections until the limit is reached
+        while(current_room.established_connections < max_room_doors){
+            let candidate = candidates.splice(randomIntFromInterval(0, candidates.length-1),1)[0]
+            map[candidate.y][candidate.x] = CONNECTED_TILE
+            current_room.established_connections++
+        }
+
+    }
+    prep_map()
+}
+
+function prep_map(){
+    for (let y = 0; y < map.length; y++){
+        for (let x = 0; x < map[0].length; x++){
+            if (map[y][x] == WALL_TILE || map[y][x] == CONNECTION_TILE){
+                map[y][x] = WALL_TILE
+            } else {
+                map[y][x] = PRE_FILL
+            }
+        }
+    }
+    floodFill()
+}
+
+function floodFill(){
+    let starting_flood = {
+        x:room_array[0].x_coord,
+        y:room_array[0].y_coord
+    }
+    let horizon = get_valid_cell_neighbors(starting_flood, 1, PRE_FILL)
+    while(horizon.length > 0){
+        let current_cell = horizon.pop()
+        map[current_cell.y][current_cell.x] = FLOOD_FILLED
+        let new_horizon = get_valid_cell_neighbors(current_cell, 1, PRE_FILL)
+        horizon = horizon.concat(new_horizon)
+    }
+
+    paintMap()
 }
