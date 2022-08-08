@@ -11,3 +11,12 @@ function randomOddIntFromInterval(min, max){
     }
     return outcome
 }
+
+
+function evaluate(l){
+    let s = 0
+    for (let i=0; i < l.length; i++){
+        s += l[i][1]
+    }
+    return s
+}

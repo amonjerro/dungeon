@@ -1,6 +1,5 @@
 function paintGrid(){
-    ctx.beginPath();
-    ctx.strokeStyle = '#555555';
+    ctx.strokeStyle = '#ccc';
     for (var i = 1; i < total_x_cells; i++){
         ctx.moveTo(i*cell_x,0);
         ctx.lineTo(i*cell_x,total_y_cells*cell_y);
@@ -14,17 +13,11 @@ function paintGrid(){
 }
 
 function showGrid(){
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    for (var i = 0; i < room_array.length; i++){
-        paintRoom(room_array[i]);
-    }
     paintGrid();
 }
 function hideGrid(){
     ctx.clearRect(0,0,canvas.width,canvas.height)
-    for (var i = 0; i < room_array.length; i++){
-        paintRoom(room_array[i]);
-    }
+    paint_map()
 }
 
 function toggleGrid(){

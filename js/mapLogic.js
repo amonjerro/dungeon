@@ -10,7 +10,7 @@ var minRoomWidth = 3;
 var maxRoomWidth = 11;
 var maxRoomHeight = 11;
 var maxRoomDoors = 3;
-var maxSparseness = 75;
+var maxSparseness = 150;
 var attempts = 200;
 
 //Constants for less trouble
