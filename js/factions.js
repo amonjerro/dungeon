@@ -11,16 +11,20 @@ function Faction(max_degree_centrality, being_type, faction_size){
     this.centrality = max_degree_centrality
     this.factionSize = faction_size
     
-    this.populateAdjacency = function(){
+    this.populateAdjacency = ()=>{
         let memberNames = this.individuals.map((e)=> {return e.name})
         this.adjacencyStructure = new AdjacencyStructure(memberNames, this.centrality)
     }
 
-    this.addIndividual = function(individual){
+    this.addIndividual = (individual)=>{
         this.individuals.push(individual)
     }
 
-    this.populateFaction = function(){
+    this.listIndividuals = ()=>{
+        return this.individuals.map((e)=> {return e.name})
+    }
+
+    this.populateFaction = ()=>{
         let IF = new IndividualFactory(4,6)
         
         for (let i = 0; i < this.factionSize; i++){
@@ -36,7 +40,7 @@ function IndividualFactory(min, max){
     this.name_length_min = min
     this.name_length_max = max
 
-    this.produceIndividual = function(type){
+    this.produceIndividual = (type)=>{
         let name_length = randomIntFromInterval(this.name_length_min, this.name_length_max)
         let nameGenerator = new MarkovChain(name_length)
         nameGenerator.randomInitialize()
@@ -70,14 +74,14 @@ function SocialIndividual(name){
         'leadership':0
     }
 
-    this.randomTraits = function(){
+    this.randomTraits = ()=>{
         let keys = Object.keys(this.traits)
         for (let k = 0; k < keys.length; k++){
             this.traits[keys[k]] = Math.random()
         }
     }
 
-    this.setName = function(value){
+    this.setName = (value)=>{
         this.name = value
     }
 }
@@ -85,6 +89,12 @@ function SocialIndividual(name){
 function NonSocialIndividual(name){
     this.name = name
 
+    this.traits = {
+        'territorialness':0,
+        'ferocity':0,
+        'cunning':0
+    }
+
     this.randomTraits = function(){
         let keys = Object.keys(this.traits)
         for (let k = 0; k < keys.length; k++){
@@ -92,13 +102,15 @@ function NonSocialIndividual(name){
         }
     }
 
-    this.setName = function(value){
+    this.setName = (value)=>{
         this.name = value
     }
 }
 
 function AdjacencyStructure(keys_of_individuals, max_degree_centrality){
     this.adjacencyMap = new Map()
+    this.degreeCentralityTree = {}
+
     for(let k = 0; k < keys_of_individuals.length; k++){
         let key = keys_of_individuals[k]
         if (!this.adjacencyMap.get(key)){
@@ -121,10 +133,14 @@ function AdjacencyStructure(keys_of_individuals, max_degree_centrality){
     }
 
     this.getNodeDegreeCentrality = (key) =>{
-        return this.adjacencyMap[key].length
+        return this.adjacencyMap.get(key).length
     }
 
     this.getNodeNeighbors = (key) =>{
-        return this.adjacencyMap[key]
+        return this.adjacencyMap.get(key)
+    }
+
+    this.getTreeLeader = () =>{
+
     }
 }
