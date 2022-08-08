@@ -3,7 +3,7 @@
 	<head>
 		<title>Mazer</title>
 		<link rel="stylesheet" href="css/style.css">
-		
+		<script src="js/graphics.js"></script>
 	</head>
 	<body>
 		<div id="visualization" class="horizontal-section">
@@ -11,7 +11,7 @@
 				<canvas width="490" height="490" id="canvas"></canvas>	
 			</div>
 			<div class="top-margin">
-				<button onclick="toggleGrid()">Toggle Grid</button>
+				<button onclick="renderer.toggleGrid()">Toggle Grid</button>
 				<button onclick="main()">Regenerate</button>
 			</div>
 			<div class="top-margin" id="controls">
@@ -48,11 +48,12 @@
 		<script src="js/factions.js"></script>
 		<script src="js/utils.js"></script>
 		<script src="js/mapLogic.js"></script>
-		<script src="js/grid.js"></script>
-		<script src="js/graphics.js"></script>
+		
 		<script>
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
+
+			var dungeonMap = new DungeonMap(canvas.height, canvas.width)
 			
 			//Slider Setup
 			var minRoomHeightSlider = document.getElementById('minRoomHeight')
@@ -71,63 +72,62 @@
 
 			minRoomHeightSlider.oninput = function(){
 				minRoomHeightSpanElement.innerHTML = this.value
-				minRoomHeight = parseInt(this.value)
+				dungeonMap.minRoomHeight = parseInt(this.value)
 			}
 
 			maxRoomHeightSlider.oninput = function(){
 				maxRoomHeightSpanElement.innerHTML = this.value
-				maxRoomHeight = parseInt(this.value)
+				dungeonMap.maxRoomHeight = parseInt(this.value)
 			}
 
 			minRoomWidthSlider.oninput = function(){
 				minRoomWidthSpanElement.innerHTML = this.value
-				minRoomWidth = parseInt(this.value)
+				dungeonMap.minRoomWidth = parseInt(this.value)
 			}
 
 			maxRoomWidthSlider.oninput = function(){
 				maxRoomWidthSpanElement.innerHTML = this.value
-				maxRoomWidth = parseInt(this.value)
+				dungeonMap.maxRoomWidth = parseInt(this.value)
 			}
 
 			maxDoorSlider.oninput = function(){
 				maxDoorSpan.innerHTML = this.value
-				maxRoomDoors = parseInt(this.value)
+				dungeonMap.maxRoomDoors = parseInt(this.value)
 			}
 
 			maxSparsenessSlider.oninput = function(){
 				maxSparsenessSpan.innerHTML = this.value
-				maxSparseness = parseInt(this.value)
+				dungeonMap.maxSparseness = parseInt(this.value)
 			}
 
-			var map = [];
-			var grid = false
+			var map = []
 			
 			//The main map creation function
 			function main(){
 				//Initialize the map
 				map = []
-				room_array = []
+				dungeonMap.room_array = []
 
 				//Clear the Canvas
-				clear_canvas()
+				renderer.clear_canvas()
 
 				// Initialize an empty map
-				for (var i = 0; i < total_y_cells; i++){
+				for (var i = 0; i < dungeonMap.total_y_cells; i++){
 					map.push([])
-					for (var j = 0; j < total_x_cells; j++){
+					for (var j = 0; j < dungeonMap.total_x_cells; j++){
 						map[i].push(0);
 					}
 				}
 
 				// Establish the rooms
-				establish_rooms()
+				dungeonMap.establish_rooms()
 				let finished = false;
 
 				// Start creating the corridors
-				var current_cell = pick_start();
+				var current_cell = dungeonMap.pickStart();
 				while(!finished){
-					make_corridors(current_cell)
-					current_cell = scan_for_new_seeds()
+					dungeonMap.make_corridors(current_cell)
+					current_cell = dungeonMap.scan_for_new_seeds()
 					if (current_cell == null){
 						finished = true;
 					}
@@ -136,14 +136,14 @@
 				//Scan for room to corridor connections
 				for (let y = 1; y < map.length-1 ; y++){
 					for (let x = 1; x < map[0].length-1; x++){
-						if (map[y][x] != WALL_TILE){
+						if (map[y][x] != dungeonMap.CONSTANTS.WALL_TILE){
 							continue;
 						}
-						valid_connection = get_valid_wall_teardown(x,y)
+						valid_connection = dungeonMap.get_valid_wall_teardown(x,y)
 					}
 				}
 
-				add_room_doors()
+				dungeonMap.add_room_doors()
 			}
 
 			main()

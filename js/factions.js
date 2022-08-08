@@ -109,6 +109,8 @@ function NonSocialIndividual(name){
 
 function AdjacencyStructure(keys_of_individuals, max_degree_centrality){
     this.adjacencyMap = new Map()
+
+    //TO DO
     this.degreeCentralityTree = {}
 
     for(let k = 0; k < keys_of_individuals.length; k++){
@@ -139,7 +141,9 @@ function AdjacencyStructure(keys_of_individuals, max_degree_centrality){
     this.getNodeNeighbors = (key) =>{
         return this.adjacencyMap.get(key)
     }
+    
 
+    //TO DO
     this.getTreeLeader = () =>{
 
     }
