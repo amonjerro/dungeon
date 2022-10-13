@@ -1,5 +1,5 @@
 body{
-	background:#52452e;
+	background:#3C1642;
 }
 
 .horizontal-section{
@@ -23,4 +23,43 @@ canvas{
 }
 .input-group label{
 	display:block;
+}
+
+.accordion{
+    background-color:#1DD3B0;
+    font-size:large;
+    color:#222;
+    cursor:pointer;
+    padding:10px;
+    text-align:left;
+    border:none;
+    outline:none;
+    transition: 0.5s;
+    width:100%;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.active, .accordion:hover{
+    background-color:#18B495;
+}
+
+.panel{
+    padding:0 18px;
+    background-color:white;
+    max-height:0;
+    overflow:hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.accordion:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+  }
+  
+.active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
 }

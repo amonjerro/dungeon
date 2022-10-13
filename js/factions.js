@@ -30,8 +30,29 @@ function Faction(max_degree_centrality, being_type, faction_size){
         for (let i = 0; i < this.factionSize; i++){
             this.addIndividual(IF.produceIndividual(this.beingType))
         }
-
         this.populateAdjacency()
+    }   
+}
+
+function FactionFactory(){
+    this.amount = 3
+    this.minCentrality = 2
+    this.maxCentrality = 3
+    this.minFactionSize = 2
+    this.maxFactionSize = 10
+    this.factions = []
+    //For now I'm only creating social factions
+    this.createFaction = ()=>{
+        let centrality = randomIntFromInterval(this.minCentrality, this.maxCentrality)
+        let size = randomIntFromInterval(this.minFactionSize, this.maxFactionSize)
+        this.factions.push(new Faction(centrality, BEING_TYPES.Social, size))
+    }
+
+    this.produceFactions = () =>{
+        this.factions.remove(0, this.factions.length)
+        for (let i = 0; i < this.amount; i++){
+            this.createFaction()
+        }
     }
 }
 

@@ -1,3 +1,10 @@
+// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function(from, to) {
+    var rest = this.slice((to || from) + 1 || this.length);
+    this.length = from < 0 ? this.length + from : from;
+    return this.push.apply(this, rest);
+  };
+
 //Helpers
 function randomIntFromInterval(min,max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -19,4 +26,20 @@ function evaluate(l){
         s += l[i][1]
     }
     return s
+}
+
+var accordion = document.getElementsByClassName("accordion")
+
+for(let i = 0; i < accordion.length; i++){
+    accordion[i].addEventListener("click", function(){
+        this.classList.toggle("active")
+        var panel = this.nextElementSibling;
+        if(panel.style.maxHeight){
+            panel.style.maxHeight = null;
+            panel.style.paddingTop = "0px";
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + 'px'
+            panel.style.paddingTop = "10px";
+        }
+    }) 
 }
