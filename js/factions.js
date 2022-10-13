@@ -32,7 +32,7 @@ function Faction(max_degree_centrality, being_type, faction_size){
         }
 
         this.populateAdjacency()
-    }
+    }   
 }
 
 function IndividualFactory(min, max){
