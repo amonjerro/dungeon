@@ -45,20 +45,20 @@
 				<button class="accordion">Faction Generation Parameters</button>
 				<div class="panel">
 					<div class="input-group">
-						<label for="minCentrality">Minimum Centrality: <span id="minCentralitySpan">3</span></label>
-						<input type="range" min="2" max="5" step="1" value="3" id="minCentrality" name="minCentrality">
+						<label for="minCentrality">Minimum Centrality: <span id="minCentralitySpan">2</span></label>
+						<input type="range" min="2" max="5" step="1" value="2" id="minCentrality" name="minCentrality">
 					</div>
 					<div class="input-group">
 						<label for="maxCentrality">Max Centrality: <span id="maxCentralitySpan">3</span></label>
 						<input type="range" min="2" max="5" step="1" value="3" id="maxCentrality" name="maxCentrality">
 					</div>
 					<div class="input-group">
-						<label for="minFactionSize">Minimum Faction Size: <span id="minFactionSizeSpan">3</span></label>
-						<input type="range" min="2" max="5" step="1" value="3" id="minFactionSize" name="minFactionSize">
+						<label for="minFactionSize">Minimum Faction Size: <span id="minFactionSizeSpan">2</span></label>
+						<input type="range" min="2" max="10" step="1" value="3" id="minFactionSize" name="minFactionSize">
 					</div>
 					<div class="input-group">
-						<label for="maxFactionSize">Max Faction Size: <span id="maxFactionSizeSpan">3</span></label>
-						<input type="range" min="2" max="5" step="1" value="3" id="maxFactionSize" name="maxFactionSize">
+						<label for="maxFactionSize">Max Faction Size: <span id="maxFactionSizeSpan">10</span></label>
+						<input type="range" min="10" max="20" step="1" value="3" id="maxFactionSize" name="maxFactionSize">
 					</div>
 					<div class="input-group">
 						<label for="factionAmount">Amount of Factions: <span id="factionAmountSpan">3</span></label>
@@ -205,6 +205,7 @@
 				}
 
 				dungeonMap.add_room_doors()
+				factionFactory.produceFactions()
 			}
 
 			main()
