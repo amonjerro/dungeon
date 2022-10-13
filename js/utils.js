@@ -20,3 +20,19 @@ function evaluate(l){
     }
     return s
 }
+
+var accordion = document.getElementsByClassName("accordion")
+
+for(let i = 0; i < accordion.length; i++){
+    accordion[i].addEventListener("click", function(){
+        this.classList.toggle("active")
+        var panel = this.nextElementSibling;
+        if(panel.style.maxHeight){
+            panel.style.maxHeight = null;
+            panel.style.paddingTop = "0px";
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + 'px'
+            panel.style.paddingTop = "10px";
+        }
+    }) 
+}

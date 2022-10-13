@@ -15,30 +15,41 @@
 				<button onclick="main()">Regenerate</button>
 			</div>
 			<div class="top-margin" id="controls">
-				<div class="input-group">
-					<label for="minRoomWidth">Min Room Width: <span id="roomMinWidthValue">3</span></label>
-					<input type="range" min="3" max="11" step="2" value="3" id="minRoomWidth" name="minRoomWidth">
+				<button class="accordion">Map Generation Parameters</button>
+				<div class="panel">
+					<div class="input-group">
+						<label for="minRoomWidth">Min Room Width: <span id="roomMinWidthValue">3</span></label>
+						<input type="range" min="3" max="11" step="2" value="3" id="minRoomWidth" name="minRoomWidth">
+					</div>
+					<div class="input-group">
+						<label for="minRoomHeight">Min Room Height: <span id="roomMinHeightValue">3</span></label>
+						<input type="range" min="3" max="11" step="2" value="3" id="minRoomHeight" name="minRoomHeight">
+					</div>
+					<div class="input-group">
+						<label for="maxRoomWidth">Max Room Width: <span id="roomMaxWidthValue">11</span></label>
+						<input type="range" min="5" max="15" step="2" value="11" id="maxRoomWidth" name="maxRoomWidth">
+					</div>
+					<div class="input-group">
+						<label for="maxRoomHeight">Max Room Height: <span id="roomMaxHeightValue">11</span></label>
+						<input type="range" min="5" max="15" step="2" value="11" id="maxRoomHeight" name="maxRoomHeight">
+					</div>
+					<div class="input-group">
+						<label for="maxRoomDoors">Max Room Doors: <span id="maxRoomDoorsSpan">3</span></label>
+						<input type="range" min="1" max="5" step="1" value="3" id="maxDoors" name="maxDoors">
+					</div>
+					<div class="input-group">
+						<label for="maxSparseness">Max Sparseness: <span id="maxSparsenessSpan">150</span></label>
+						<input type="range" min="50" max="200" step="5" value="150" id="maxSparseness" name="maxSparseness">
+					</div>
 				</div>
-				<div class="input-group">
-					<label for="minRoomHeight">Min Room Height: <span id="roomMinHeightValue">3</span></label>
-					<input type="range" min="3" max="11" step="2" value="3" id="minRoomHeight" name="minRoomHeight">
+				<button class="accordion">Faction Generation Parameters</button>
+				<div class="panel">
+					<div class="input-group">
+						<label for="factionAmount">Amount of Factions: <span id="minFactionValue">3</span></label>
+						<input type="range" min="2" max="5" step="2" value="3" id="factionAmount" name="factionAmount">
+					</div>
 				</div>
-				<div class="input-group">
-					<label for="maxRoomWidth">Max Room Width: <span id="roomMaxWidthValue">11</span></label>
-					<input type="range" min="5" max="15" step="2" value="11" id="maxRoomWidth" name="maxRoomWidth">
-				</div>
-				<div class="input-group">
-					<label for="maxRoomHeight">Max Room Height: <span id="roomMaxHeightValue">11</span></label>
-					<input type="range" min="5" max="15" step="2" value="11" id="maxRoomHeight" name="maxRoomHeight">
-				</div>
-				<div class="input-group">
-					<label for="maxRoomDoors">Max Room Doors: <span id="maxRoomDoorsSpan">3</span></label>
-					<input type="range" min="1" max="5" step="1" value="3" id="maxDoors" name="maxDoors">
-				</div>
-				<div class="input-group">
-					<label for="maxSparseness">Max Sparseness: <span id="maxSparsenessSpan">150</span></label>
-					<input type="range" min="50" max="200" step="5" value="150" id="maxSparseness" name="maxSparseness">
-				</div>
+				
 			</div>
 		</div>
 		<div id="textOutput" class="horizontal-section scrollable">

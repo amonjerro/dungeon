@@ -76,7 +76,8 @@ function DungeonMap(height, width){
     this.create_room = ()=>{
         var room = {
             width: randomOddIntFromInterval(this.minRoomWidth,this.maxRoomWidth),
-            height: randomOddIntFromInterval(this.minRoomHeight,this.maxRoomHeight)
+            height: randomOddIntFromInterval(this.minRoomHeight,this.maxRoomHeight),
+            neighbors: []
         }
         room.y_coord = randomOddIntFromInterval(1,this.total_y_cells-room.height-2);
         room.x_coord = randomOddIntFromInterval(1,this.total_x_cells-room.width-2);

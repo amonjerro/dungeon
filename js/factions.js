@@ -30,7 +30,6 @@ function Faction(max_degree_centrality, being_type, faction_size){
         for (let i = 0; i < this.factionSize; i++){
             this.addIndividual(IF.produceIndividual(this.beingType))
         }
-
         this.populateAdjacency()
     }   
 }
