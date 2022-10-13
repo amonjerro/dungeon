@@ -157,7 +157,6 @@ function DungeonMap(height, width){
 
 
     this.get_valid_wall_teardown = (x,y)=>{
-        is_valid_connection = false
         // Check vertical connection
         if (
             (map[y-1][x] > this.CONSTANTS.WALL_TILE && map[y+1][x] > this.CONSTANTS.WALL_TILE) && 
@@ -170,7 +169,6 @@ function DungeonMap(height, width){
             } else {
                 //Mark as 3
                 map[y][x] = this.CONSTANTS.CONNECTION_TILE
-                is_valid_connection = true
             }
         }
         // Check Horizontal Connection
@@ -185,10 +183,8 @@ function DungeonMap(height, width){
             } else {
                 //Mark as 3
                 map[y][x] = this.CONSTANTS.CONNECTION_TILE
-                is_valid_connection = true
             }
         }
-        return is_valid_connection
     }
 
     this.dig_corridor = (cell)=>{
@@ -244,14 +240,23 @@ function DungeonMap(height, width){
                         } else if (map[current_room.y_coord+h][current_room.x_coord+w-1] == this.CONSTANTS.CONNECTION_TILE) {
                             candidates.push({
                                 x:current_room.x_coord+w-1,
-                                y:current_room.y_coord+h
+                                y:current_room.y_coord+h,
+                                beyond_coordinates:{
+                                    x:current_room.x_coord+w-2,
+                                    y:current_room.y_coord+h
+                                }
+
                             })
                         } else if(map[current_room.y_coord+h][current_room.x_coord+w+1] == this.CONSTANTS.CONNECTED_TILE) {
                             current_room.established_connections++;
                         } else if (map[current_room.y_coord+h][current_room.x_coord+w+1] == this.CONSTANTS.CONNECTION_TILE){
                             candidates.push({
                                 x:current_room.x_coord+w+1,
-                                y:current_room.y_coord+h
+                                y:current_room.y_coord+h,
+                                beyond_coordinates:{
+                                    x:current_room.x_coord+w+2,
+                                    y:current_room.y_coord+h
+                                }
                             })
                         }
                     }
@@ -264,7 +269,11 @@ function DungeonMap(height, width){
                 } else if (map[current_room.y_coord-1][current_room.x_coord+w] == this.CONSTANTS.CONNECTION_TILE){
                     candidates.push({
                         x:current_room.x_coord+w,
-                        y:current_room.y_coord-1
+                        y:current_room.y_coord-1,
+                        beyond_coordinates:{
+                            x:current_room.x_coord+w,
+                            y:current_room.y_coord-2
+                        }
                     })
                 }
                 //Check bottom
@@ -275,7 +284,11 @@ function DungeonMap(height, width){
                 } else if (map[bottom_margin][current_room.x_coord+w] == this.CONSTANTS.CONNECTION_TILE){
                     candidates.push({
                         x:current_room.x_coord+w,
-                        y:bottom_margin
+                        y:bottom_margin,
+                        beyond_coordinates:{
+                            x:current_room.x_coord+w,
+                            y:bottom_margin+1
+                        }
                     })
                 }
             }
@@ -285,6 +298,18 @@ function DungeonMap(height, width){
                 let candidate = candidates.splice(randomIntFromInterval(0, candidates.length-1),1)[0]
                 map[candidate.y][candidate.x] = this.CONSTANTS.CONNECTED_TILE
                 current_room.established_connections++
+                let possible_neighbor = candidate.beyond_coordinates
+                if (map[possible_neighbor.y][possible_neighbor.x] == this.CONSTANTS.ROOM_TILE){
+                    //These are two adjacent rooms
+                    let adjacent_room = this.find_room_from_coordinates(possible_neighbor.x, possible_neighbor.y)
+                    if (!adjacent_room){
+                        console.log(possible_neighbor, current_room)
+                        console.log(this.room_array)
+                        throw 'Weird room'
+                    }
+                    current_room.neighbors.push(adjacent_room)
+                }
+
             }
 
         }
@@ -376,5 +401,18 @@ function DungeonMap(height, width){
             }
         }
         renderer.paint_map()
+    }
+    
+    this.find_room_from_coordinates = (x,y) => {
+        for (let r = 0; r < this.room_array.length; r++){
+            let room = this.room_array[r];
+            if (x >= room.x_coord && x <= room.x_coord+room.width
+                 && y >= room.y_coord && y <= room.y_coord+room.height){
+                    return room
+            }
+        }
+    }
+    this.filter_rooms_with_neighbors = () =>{
+        return this.room_array.filter((e)=>{return e.neighbors.length > 0})
     }
 }
