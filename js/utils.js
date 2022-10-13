@@ -12,7 +12,7 @@ function randomOddIntFromInterval(min, max){
     return outcome
 }
 
-
+//Markov Chain evaluator
 function evaluate(l){
     let s = 0
     for (let i=0; i < l.length; i++){
