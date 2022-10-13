@@ -81,6 +81,7 @@ function DungeonMap(height, width){
         }
         room.y_coord = randomOddIntFromInterval(1,this.total_y_cells-room.height-2);
         room.x_coord = randomOddIntFromInterval(1,this.total_x_cells-room.width-2);
+        room.key = 'x:'+room.x_coord+'y:'+room.y_coord
         return room;
     }
 
@@ -307,7 +308,14 @@ function DungeonMap(height, width){
                         console.log(this.room_array)
                         throw 'Weird room'
                     }
-                    current_room.neighbors.push(adjacent_room)
+
+                    //Check if rooms already marked as neighbors
+                    if(current_room.neighbors.filter((e)=>{return e.key == adjacent_room.key}).length == 0){
+                        current_room.neighbors.push(adjacent_room)
+                        //Reciprocal
+                        adjacent_room.neighbors.push(current_room)
+                    }
+                    
                 }
 
             }
