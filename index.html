@@ -11,7 +11,7 @@
 				<canvas width="490" height="490" id="canvas"></canvas>	
 			</div>
 			<div class="top-margin">
-				<button onclick="renderer.toggleGrid()">Toggle Grid</button>
+				<button onclick="toggleFaction()">Toggle Faction Map</button>
 				<button onclick="main()">Regenerate</button>
 			</div>
 			<div class="top-margin" id="controls">
@@ -76,6 +76,7 @@
 		<script src="js/utils.js"></script>
 		<script src="js/mapLogic.js"></script>
 		<script>
+			var is_faction = false
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
 
@@ -206,6 +207,29 @@
 
 				dungeonMap.add_room_doors()
 				factionFactory.produceFactions()
+				dungeonMap.factionDivvy(factionFactory.factions)
+				render_screen()
+			}
+
+			function render_nonfaction(){
+				renderer.paint_map()
+			}
+
+			function render_faction(){
+				renderer.paint_faction_map(dungeonMap.room_array)
+			}
+
+			function render_screen(){
+				if (is_faction){
+					render_faction()
+				} else {
+					render_nonfaction()
+				}
+			}
+
+			function toggleFaction(){
+				is_faction = !is_faction
+				render_screen()
 			}
 
 			main()
