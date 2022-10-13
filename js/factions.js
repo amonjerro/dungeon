@@ -34,6 +34,19 @@ function Faction(max_degree_centrality, being_type, faction_size){
     }   
 }
 
+function FactionFactory(){
+    this.amount = 3
+    this.minCentrality = 3
+    this.maxCentrality = 3
+    this.minFactionSize = 3
+    this.maxFactionSize = 
+    this.factions = []
+    //For now I'm only creating social factions
+    this.createFaction = ()=>{
+        this.factions.push(new Faction())
+    }
+}
+
 function IndividualFactory(min, max){
 
     this.name_length_min = min

@@ -45,7 +45,23 @@
 				<button class="accordion">Faction Generation Parameters</button>
 				<div class="panel">
 					<div class="input-group">
-						<label for="factionAmount">Amount of Factions: <span id="minFactionValue">3</span></label>
+						<label for="minCentrality">Minimum Centrality: <span id="minCentralitySpan">3</span></label>
+						<input type="range" min="2" max="5" step="2" value="3" id="minCentrality" name="minCentrality">
+					</div>
+					<div class="input-group">
+						<label for="maxCentrality">Max Centrality: <span id="maxCentralitySpan">3</span></label>
+						<input type="range" min="2" max="5" step="2" value="3" id="maxCentrality" name="maxCentrality">
+					</div>
+					<div class="input-group">
+						<label for="minFactionSize">Minimum Faction Size: <span id="minFactionSizeSpan">3</span></label>
+						<input type="range" min="2" max="5" step="2" value="3" id="minFactionSize" name="minFactionSize">
+					</div>
+					<div class="input-group">
+						<label for="maxFactionSize">Max Faction Size: <span id="maxFactionSizeSpan">3</span></label>
+						<input type="range" min="2" max="5" step="2" value="3" id="maxFactionSize" name="maxFactionSize">
+					</div>
+					<div class="input-group">
+						<label for="factionAmount">Amount of Factions: <span id="factionAmountSpan">3</span></label>
 						<input type="range" min="2" max="5" step="2" value="3" id="factionAmount" name="factionAmount">
 					</div>
 				</div>
@@ -59,12 +75,12 @@
 		<script src="js/factions.js"></script>
 		<script src="js/utils.js"></script>
 		<script src="js/mapLogic.js"></script>
-		
 		<script>
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
 
 			var dungeonMap = new DungeonMap(canvas.height, canvas.width)
+			var factionFactory = new FactionFactory()
 			
 			//Slider Setup
 			var minRoomHeightSlider = document.getElementById('minRoomHeight')
@@ -74,12 +90,46 @@
 			var maxDoorSlider = document.getElementById('maxDoors')
 			var maxSparsenessSlider = document.getElementById('maxSparseness')
 
+			var factionAmountSlider = document.getElementById('factionAmount')
+			var minCentralitySlider = document.getElementById('minCentrality')
+			var maxCentralitySlider = document.getElementById('maxCentrality')
+			var minFactionSizeSlider = document.getElementById('minFactionSize')
+			var maxFactionSizeSlider = document.getElementById('maxFactionSize')
+
 			var minRoomWidthSpanElement = document.getElementById('roomMinWidthValue')
 			var maxRoomWidthSpanElement = document.getElementById('roomMaxWidthValue')
 			var minRoomHeightSpanElement = document.getElementById('roomMinHeightValue')
 			var maxRoomHeightSpanElement = document.getElementById('roomMaxHeightValue')
 			var maxDoorSpan = document.getElementById('maxRoomDoorsSpan')
 			var maxSparsenessSpan = document.getElementById('maxSparsenessSpan')
+
+			var factionAmountSpan = document.getElementById('factionAmountSpan')
+			var minCentralitySpan = document.getElementById('minCentralitySpan')
+			var maxCentralitySpan = document.getElementById('maxCentralitySpan')
+			var minFactionSizeSpan = document.getElementById('minFactionSizeSpan')
+			var maxFactionSizeSpan = document.getElementById('maxFactionSizeSpan')
+
+			minCentralitySlider.oninput = function(){
+				minCentralitySpan.innerHTML = this.value
+				factionFactory.minCentrality = parseInt(this.value)
+			}
+			maxCentralitySlider.oninput = function(){
+				maxCentralitySpan.innerHTML = this.value
+				factionFactory.maxCentrality = parseInt(this.value)
+			}
+			minFactionSizeSlider.oninput = function(){
+				minFactionSizeSpan.innerHTML = this.value
+				factionFactory.minFactionSize = parseInt(this.value)
+			}
+			maxFactionSizeSlider.oninput = function(){
+				maxFactionSizeSpan.innerHTML = this.value
+				factionFactory.maxFactionSize = parseInt(this.value)
+			}
+
+			factionAmountSlider.oninput = function(){
+				factionAmountSpan.innerHTML = this.value
+				factionFactory.amount = parseInt(this.value)
+			}
 
 			minRoomHeightSlider.oninput = function(){
 				minRoomHeightSpanElement.innerHTML = this.value
