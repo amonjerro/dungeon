@@ -420,7 +420,26 @@ function DungeonMap(height, width){
             }
         }
     }
+
     this.filter_rooms_with_neighbors = () =>{
         return this.room_array.filter((e)=>{return e.neighbors.length > 0})
+    }
+
+    this.factionDivvy = (factions) => {
+        for (let r = 0; r < this.room_array.length; r++){
+            this.room_array[r].owner = randomIntFromInterval(0, factions.length-1)
+            this.room_array[r].is_contested = false
+        }
+
+        //Evaluate if contested
+        let rooms_with_neighbors = this.filter_rooms_with_neighbors()
+        for (let r = 0; r < rooms_with_neighbors.length; r++){
+            let room_ref = rooms_with_neighbors[r]
+            let neighbor_factions = new Set(room_ref.neighbors.map((e)=>{return e.owner}))
+            
+            if (neighbor_factions.length > 1 || (neighbor_factions.length == 1 && !neighbor_factions.has(room_ref.owner))){
+                room_ref.is_contested = true   
+            }
+        }
     }
 }

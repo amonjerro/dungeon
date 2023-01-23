@@ -8,15 +8,28 @@ function Renderer(){
         '#5555BB'
     ]
     this.grid = false
+
+    this.paint_faction_map = (rooms) => {
+        for (let r = 0; r < rooms.length; r++){
+            this.paint_room(rooms[r], pickAColor(rooms[r].owner))
+        }
+    }
     
-    this.paint_room = (room) =>{
-        ctx.strokeStyle = '#999999';
+    this.paint_room = (room, color) =>{
+        ctx.strokeStyle = color
+        ctx.fillStyle = color
         ctx.strokeRect(
             room.x_coord*dungeonMap.cell_x,
             room.y_coord*dungeonMap.cell_y,
             room.width*dungeonMap.cell_x,
             room.height*dungeonMap.cell_y
         );
+        ctx.fillRect(
+            room.x_coord*dungeonMap.cell_x,
+            room.y_coord*dungeonMap.cell_y,
+            room.width*dungeonMap.cell_x,
+            room.height*dungeonMap.cell_y
+        )
     }
     
     this.paint_corridor = (cell)=>{

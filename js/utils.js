@@ -19,6 +19,20 @@ function randomOddIntFromInterval(min, max){
     return outcome
 }
 
+//Colors
+const COLOR_PALETTE = [
+    '#FF1D15','#41CC00',
+    '#73B3D3','#FFFC31',
+    '#F7C59F','#E1E5EE','#FE5F55'
+]
+
+function pickAColor(index){
+    if (index >= COLOR_PALETTE.length){
+        throw 'Too many factions created - extend color pallete range'
+    }
+    return COLOR_PALETTE[index]
+}
+
 //Markov Chain evaluator
 function evaluate(l){
     let s = 0
