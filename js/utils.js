@@ -5,6 +5,12 @@ Array.prototype.remove = function(from, to) {
     return this.push.apply(this, rest);
   };
 
+String.prototype.capitalize = function(){
+    let firstLetter = this.charAt(0).toUpperCase();
+    let rest = this.slice(1)
+    return firstLetter + rest;
+}
+
 //Helpers
 function randomIntFromInterval(min,max){
     return Math.floor(Math.random()*(max-min+1)+min);
@@ -56,4 +62,18 @@ for(let i = 0; i < accordion.length; i++){
             panel.style.paddingTop = "10px";
         }
     }) 
+}
+
+function createFactionPanel(){
+    element = document.createElement("div")
+    element.classList.add("panel")
+
+    title = document.createElement("h2")
+    title.classList.add("individual-panel-title")
+
+    title_text = document.createTextNode(`List of members`);
+    title.appendChild(title_text)
+    element.appendChild(title)
+
+    return element;
 }
