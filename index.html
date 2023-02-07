@@ -6,71 +6,76 @@
 		<script src="js/graphics.js"></script>
 	</head>
 	<body>
-		<div id="visualization" class="horizontal-section">
-			<div id="canvas-container">
-				<canvas width="490" height="490" id="canvas"></canvas>	
-			</div>
-			<div class="top-margin">
-				<button onclick="toggleFaction()">Toggle Faction Map</button>
-				<button onclick="main()">Regenerate</button>
-			</div>
-			<div class="top-margin" id="controls">
-				<button class="accordion">Map Generation Parameters</button>
-				<div class="panel">
-					<div class="input-group">
-						<label for="minRoomWidth">Min Room Width: <span id="roomMinWidthValue">3</span></label>
-						<input type="range" min="3" max="11" step="2" value="3" id="minRoomWidth" name="minRoomWidth">
+		<div class="layout">
+			<div id="visualization" class="horizontal-section">
+				<div id="canvas-container">
+					<canvas width="490" height="490" id="canvas"></canvas>	
+				</div>
+				<div class="top-margin">
+					<button onclick="toggleFaction()">Toggle Faction Map</button>
+					<button onclick="main()">Regenerate</button>
+				</div>
+				<div class="top-margin" id="controls">
+					<button class="accordion">Map Generation Parameters</button>
+					<div class="panel">
+						<div class="input-group">
+							<label for="minRoomWidth">Min Room Width: <span id="roomMinWidthValue">3</span></label>
+							<input type="range" min="3" max="11" step="2" value="3" id="minRoomWidth" name="minRoomWidth">
+						</div>
+						<div class="input-group">
+							<label for="minRoomHeight">Min Room Height: <span id="roomMinHeightValue">3</span></label>
+							<input type="range" min="3" max="11" step="2" value="3" id="minRoomHeight" name="minRoomHeight">
+						</div>
+						<div class="input-group">
+							<label for="maxRoomWidth">Max Room Width: <span id="roomMaxWidthValue">11</span></label>
+							<input type="range" min="5" max="15" step="2" value="11" id="maxRoomWidth" name="maxRoomWidth">
+						</div>
+						<div class="input-group">
+							<label for="maxRoomHeight">Max Room Height: <span id="roomMaxHeightValue">11</span></label>
+							<input type="range" min="5" max="15" step="2" value="11" id="maxRoomHeight" name="maxRoomHeight">
+						</div>
+						<div class="input-group">
+							<label for="maxRoomDoors">Max Room Doors: <span id="maxRoomDoorsSpan">3</span></label>
+							<input type="range" min="1" max="5" step="1" value="3" id="maxDoors" name="maxDoors">
+						</div>
+						<div class="input-group">
+							<label for="maxSparseness">Max Sparseness: <span id="maxSparsenessSpan">150</span></label>
+							<input type="range" min="50" max="200" step="5" value="150" id="maxSparseness" name="maxSparseness">
+						</div>
 					</div>
-					<div class="input-group">
-						<label for="minRoomHeight">Min Room Height: <span id="roomMinHeightValue">3</span></label>
-						<input type="range" min="3" max="11" step="2" value="3" id="minRoomHeight" name="minRoomHeight">
-					</div>
-					<div class="input-group">
-						<label for="maxRoomWidth">Max Room Width: <span id="roomMaxWidthValue">11</span></label>
-						<input type="range" min="5" max="15" step="2" value="11" id="maxRoomWidth" name="maxRoomWidth">
-					</div>
-					<div class="input-group">
-						<label for="maxRoomHeight">Max Room Height: <span id="roomMaxHeightValue">11</span></label>
-						<input type="range" min="5" max="15" step="2" value="11" id="maxRoomHeight" name="maxRoomHeight">
-					</div>
-					<div class="input-group">
-						<label for="maxRoomDoors">Max Room Doors: <span id="maxRoomDoorsSpan">3</span></label>
-						<input type="range" min="1" max="5" step="1" value="3" id="maxDoors" name="maxDoors">
-					</div>
-					<div class="input-group">
-						<label for="maxSparseness">Max Sparseness: <span id="maxSparsenessSpan">150</span></label>
-						<input type="range" min="50" max="200" step="5" value="150" id="maxSparseness" name="maxSparseness">
+					<button class="accordion">Faction Generation Parameters</button>
+					<div class="panel">
+						<div class="input-group">
+							<label for="minCentrality">Minimum Centrality: <span id="minCentralitySpan">2</span></label>
+							<input type="range" min="2" max="5" step="1" value="2" id="minCentrality" name="minCentrality">
+						</div>
+						<div class="input-group">
+							<label for="maxCentrality">Max Centrality: <span id="maxCentralitySpan">3</span></label>
+							<input type="range" min="2" max="5" step="1" value="3" id="maxCentrality" name="maxCentrality">
+						</div>
+						<div class="input-group">
+							<label for="minFactionSize">Minimum Faction Size: <span id="minFactionSizeSpan">2</span></label>
+							<input type="range" min="2" max="10" step="1" value="3" id="minFactionSize" name="minFactionSize">
+						</div>
+						<div class="input-group">
+							<label for="maxFactionSize">Max Faction Size: <span id="maxFactionSizeSpan">10</span></label>
+							<input type="range" min="10" max="20" step="1" value="3" id="maxFactionSize" name="maxFactionSize">
+						</div>
+						<div class="input-group">
+							<label for="factionAmount">Amount of Factions: <span id="factionAmountSpan">3</span></label>
+							<input type="range" min="2" max="5" step="1" value="3" id="factionAmount" name="factionAmount">
+						</div>
 					</div>
 				</div>
-				<button class="accordion">Faction Generation Parameters</button>
-				<div class="panel">
-					<div class="input-group">
-						<label for="minCentrality">Minimum Centrality: <span id="minCentralitySpan">2</span></label>
-						<input type="range" min="2" max="5" step="1" value="2" id="minCentrality" name="minCentrality">
-					</div>
-					<div class="input-group">
-						<label for="maxCentrality">Max Centrality: <span id="maxCentralitySpan">3</span></label>
-						<input type="range" min="2" max="5" step="1" value="3" id="maxCentrality" name="maxCentrality">
-					</div>
-					<div class="input-group">
-						<label for="minFactionSize">Minimum Faction Size: <span id="minFactionSizeSpan">2</span></label>
-						<input type="range" min="2" max="10" step="1" value="3" id="minFactionSize" name="minFactionSize">
-					</div>
-					<div class="input-group">
-						<label for="maxFactionSize">Max Faction Size: <span id="maxFactionSizeSpan">10</span></label>
-						<input type="range" min="10" max="20" step="1" value="3" id="maxFactionSize" name="maxFactionSize">
-					</div>
-					<div class="input-group">
-						<label for="factionAmount">Amount of Factions: <span id="factionAmountSpan">3</span></label>
-						<input type="range" min="2" max="5" step="1" value="3" id="factionAmount" name="factionAmount">
-					</div>
-				</div>
+			</div>
+			<div id="textOutput" class="horizontal-section scrollable">
+				Section under construction
+				<div id="factionContainer"></div>
 				
 			</div>
 		</div>
-		<div id="textOutput" class="horizontal-section scrollable">
-			
-		</div>
+		
+		
 		<script src="js/linguistics.js"></script>
 		<script src="js/factions.js"></script>
 		<script src="js/utils.js"></script>
@@ -83,6 +88,8 @@
 			var dungeonMap = new DungeonMap(canvas.height, canvas.width)
 			var factionFactory = new FactionFactory()
 			
+			factionFactory.setContainer(document.getElementById("factionContainer"))
+
 			//Slider Setup
 			var minRoomHeightSlider = document.getElementById('minRoomHeight')
 			var maxRoomHeightSlider = document.getElementById('maxRoomHeight')
@@ -207,8 +214,13 @@
 
 				dungeonMap.add_room_doors()
 				factionFactory.produceFactions()
-				dungeonMap.factionDivvy(factionFactory.factions)
+				factionFactory.setUpContainer();
+
+				
+				let divvied_numbers = dungeonMap.factionDivvy(factionFactory.factions)
+				factionFactory.recalculateFactionSizes(divvied_numbers)
 				render_screen()
+				
 			}
 
 			function render_nonfaction(){

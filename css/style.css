@@ -2,8 +2,12 @@ body{
 	background:#3C1642;
 }
 
+.layout{
+    display:flex;
+}
+
 .horizontal-section{
-	max-width:50%;
+	min-width:50%;
 }
 
 #canvas-container, #visualization{
@@ -62,4 +66,12 @@ canvas{
   
 .active:after {
     content: "\2796"; /* Unicode character for "minus" sign (-) */
+}
+
+#textOutput{
+    color:#fff;
+}
+
+#factionContainer {
+    color:#000;
 }

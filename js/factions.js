@@ -4,12 +4,16 @@ const BEING_TYPES = Object.freeze({
 })
 
 
-function Faction(max_degree_centrality, being_type, faction_size){
+
+function Faction(max_degree_centrality, being_type, sociabilityDegree){
     this.individuals = []
     this.adjacencyStructure = {}
     this.beingType = being_type
     this.centrality = max_degree_centrality
-    this.factionSize = faction_size
+    this.factionSize = 0
+    this.sociabilityDegree = sociabilityDegree
+    this.div = null;
+    this.individualContainer = null;
     
     this.populateAdjacency = ()=>{
         let memberNames = this.individuals.map((e)=> {return e.name})
@@ -21,17 +25,50 @@ function Faction(max_degree_centrality, being_type, faction_size){
     }
 
     this.listIndividuals = ()=>{
-        return this.individuals.map((e)=> {return e.name})
+        return this.individuals.map((e)=> {return e.name.capitalize()})
     }
 
-    this.populateFaction = ()=>{
+    this.populateFaction = (populate_adjacency)=>{
         let IF = new IndividualFactory(4,6)
         
         for (let i = 0; i < this.factionSize; i++){
             this.addIndividual(IF.produceIndividual(this.beingType))
         }
-        this.populateAdjacency()
-    }   
+        if (populate_adjacency){
+            this.populateAdjacency()
+        }
+        this.populateDiv();
+    }
+
+    this.populateDiv = () => {
+        let individual_map = this.listIndividuals();
+        let list_element = document.createElement("ul")
+        for (let i = 0; i < individual_map.length; i++){
+            //Create the basic element
+            let individual_element = document.createElement("li")
+            let text_element = document.createTextNode(individual_map[i])
+
+            individual_element.appendChild(text_element)
+            list_element.appendChild(individual_element)
+        }
+        this.individualContainer.appendChild(list_element)
+    }
+
+    this.setSize = (size)=>{
+        this.factionSize = size;
+        if (this.individuals.length != size){
+            this.populateFaction(false);   
+        }
+    }
+
+    //Set reference to the GUI to print information to the screen.
+    this.setDiv = (div) => {
+        this.div = div;
+    }
+    this.setIndividualContainer = (div)=>{
+        this.individualContainer = div;
+    }
+
 }
 
 function FactionFactory(){
@@ -41,17 +78,73 @@ function FactionFactory(){
     this.minFactionSize = 2
     this.maxFactionSize = 10
     this.factions = []
+    this.div = null
+    
     //For now I'm only creating social factions
     this.createFaction = ()=>{
         let centrality = randomIntFromInterval(this.minCentrality, this.maxCentrality)
-        let size = randomIntFromInterval(this.minFactionSize, this.maxFactionSize)
-        this.factions.push(new Faction(centrality, BEING_TYPES.Social, size))
+        this.factions.push(new Faction(centrality, BEING_TYPES.Social, (Math.random()*4)+3))
     }
 
     this.produceFactions = () =>{
         this.factions.remove(0, this.factions.length)
         for (let i = 0; i < this.amount; i++){
             this.createFaction()
+        }
+    }
+
+    this.recalculateFactionSizes = (requirements) =>{
+        for (let r = 0; r < requirements.length; r++){
+            this.factions[r].setSize(randomIntFromInterval(requirements[r], requirements[r] * this.factions[r].sociabilityDegree))
+        }
+    }
+
+    this.setContainer = (div)=>{
+        this.div = div;
+    }
+
+    this.setUpContainer = () => {
+        //Clear the previous contents of the container first
+        this.div.replaceChildren();
+
+        for (let f = 0; f < this.factions.length; f++){
+            //Create an element for the faction
+            let element = document.createElement("div")
+            element.classList.add("faction")
+
+            //Make it an accordion
+            let button_element = document.createElement("button")
+            button_element.classList.add("accordion")
+            
+
+            let button_text = document.createTextNode(`Faction ${f}`)
+            button_element.appendChild(button_text)
+
+            
+            let panel_element = createFactionPanel()
+
+
+            //Assemble the HTML
+            element.appendChild(button_element)
+            element.appendChild(panel_element)
+
+            //Enable the accordion
+            button_element.addEventListener("click", function(){
+                this.classList.toggle("active")
+                var panel = this.nextElementSibling;
+                if(panel.style.maxHeight){
+                    panel.style.maxHeight = null;
+                    panel.style.paddingTop = "0px";
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + 'px'
+                    panel.style.paddingTop = "10px";
+                }
+            })
+
+            //Add this element to the faction container
+            this.div.appendChild(element)
+            this.factions[f].setDiv(element)
+            this.factions[f].setIndividualContainer(panel_element)
         }
     }
 }

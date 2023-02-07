@@ -426,8 +426,14 @@ function DungeonMap(height, width){
     }
 
     this.factionDivvy = (factions) => {
+        let returnable = [];
+        for (let i = 0; i < factions.length; i++){
+            returnable.push(0);
+        }
+
         for (let r = 0; r < this.room_array.length; r++){
             this.room_array[r].owner = randomIntFromInterval(0, factions.length-1)
+            returnable[this.room_array[r].owner] += 1;
             this.room_array[r].is_contested = false
         }
 
@@ -438,8 +444,9 @@ function DungeonMap(height, width){
             let neighbor_factions = new Set(room_ref.neighbors.map((e)=>{return e.owner}))
             
             if (neighbor_factions.length > 1 || (neighbor_factions.length == 1 && !neighbor_factions.has(room_ref.owner))){
-                room_ref.is_contested = true   
+                room_ref.is_contested = true
             }
         }
+        return returnable;
     }
 }

@@ -334,7 +334,7 @@ const LETTER_TO_LETTER_MARKOV_VALUES = new Map([
             ['z',0.01]
         ]
     }],
-    ['y',{
+    ['z',{
         'v':[
             ['a',0.1],['e',0.1],['o',0.1],['i',0.6],['u',0.1]
         ],
