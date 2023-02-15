@@ -85,7 +85,7 @@
 			var canvas = document.getElementById('canvas');
 			var ctx = canvas.getContext('2d');
 
-			var dungeonMap = new DungeonMap(canvas.height, canvas.width)
+			var dungeonMap = new DungeonMap(canvas.height, canvas.width, 10, 10)
 			var factionFactory = new FactionFactory()
 			
 			factionFactory.setContainer(document.getElementById("factionContainer"))
@@ -220,6 +220,9 @@
 				let divvied_numbers = dungeonMap.factionDivvy(factionFactory.factions)
 				factionFactory.recalculateFactionSizes(divvied_numbers)
 				render_screen()
+				for (let f = 0; f < factionFactory.factions.length; f++){
+					dungeonMap.placeIndividuals(f,factionFactory.factions[f].listIndividuals())
+				}
 				
 			}
 
