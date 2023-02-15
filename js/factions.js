@@ -11,10 +11,16 @@ function Faction(max_degree_centrality, being_type, sociabilityDegree){
     this.beingType = being_type
     this.centrality = max_degree_centrality
     this.factionSize = 0
+    this.factionName = '';
     this.sociabilityDegree = sociabilityDegree
     this.div = null;
     this.individualContainer = null;
     
+
+    this.setFactionName = (value)=>{
+        this.factionName = value
+    }
+
     this.populateAdjacency = ()=>{
         let memberNames = this.individuals.map((e)=> {return e.name})
         this.adjacencyStructure = new AdjacencyStructure(memberNames, this.centrality)
@@ -24,8 +30,12 @@ function Faction(max_degree_centrality, being_type, sociabilityDegree){
         this.individuals.push(individual)
     }
 
-    this.listIndividuals = ()=>{
+    this.listIndividualsByName = ()=>{
         return this.individuals.map((e)=> {return e.name.capitalize()})
+    }
+
+    this.listIndividuals = ()=>{
+        return this.individuals
     }
 
     this.populateFaction = (populate_adjacency)=>{
@@ -41,16 +51,33 @@ function Faction(max_degree_centrality, being_type, sociabilityDegree){
     }
 
     this.populateDiv = () => {
-        let individual_map = this.listIndividuals();
+        let individual_map = this.listIndividualsByName();
         let list_element = document.createElement("ul")
+        list_element.classList.add('faction-roster')
         for (let i = 0; i < individual_map.length; i++){
             //Create the basic element
             let individual_element = document.createElement("li")
             let text_element = document.createTextNode(individual_map[i])
 
             individual_element.appendChild(text_element)
+            individual_element.dataset.factionName = this.factionName
+            individual_element.dataset.individualId = i
+            individual_element.classList.add('faction-individual')
+
+            individual_element.addEventListener('mouseenter',(e)=>{
+                let individual = this.individuals[i]
+                renderer.paintIndividual(individual.x, individual.y, '#FF8811',true)
+            })
+
+            individual_element.addEventListener('mouseout',(e)=>{
+                let individual = this.individuals[i]
+                renderer.paintIndividual(individual.x, individual.y, '#FFF',false)
+            })
+
             list_element.appendChild(individual_element)
         }
+
+        
         this.individualContainer.appendChild(list_element)
     }
 
@@ -81,15 +108,21 @@ function FactionFactory(){
     this.div = null
     
     //For now I'm only creating social factions
-    this.createFaction = ()=>{
+    this.createFaction = (identifier)=>{
         let centrality = randomIntFromInterval(this.minCentrality, this.maxCentrality)
-        this.factions.push(new Faction(centrality, BEING_TYPES.Social, (Math.random()*4)+3))
+        let createdFaction = new Faction(centrality, BEING_TYPES.Social, (Math.random()*4)+3)
+        createdFaction.setFactionName(identifier)
+        this.factions.push(createdFaction)
+    }
+
+    this.getFactions = () => {
+        return this.factions;
     }
 
     this.produceFactions = () =>{
         this.factions.remove(0, this.factions.length)
         for (let i = 0; i < this.amount; i++){
-            this.createFaction()
+            this.createFaction(i)
         }
     }
 

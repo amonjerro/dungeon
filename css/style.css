@@ -75,3 +75,16 @@ canvas{
 #factionContainer {
     color:#000;
 }
+
+.faction-individual:hover{
+    text-shadow:
+    -1px -1px 0 #ccc,
+    1px -1px 0 #ccc,
+    -1px 1px 0 #ccc,
+    1px 1px 0 #ccc;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+    cursor:pointer;
+}

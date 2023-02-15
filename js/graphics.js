@@ -1,4 +1,4 @@
-function Renderer(){
+function Renderer(cell_x, cell_y){
     this.COLOR_MAP = [
         "#000000",
         "#ffffff",
@@ -7,7 +7,11 @@ function Renderer(){
         '#338787',
         '#5555BB'
     ]
+    this.cell_x = cell_x;
+    this.cell_y = cell_y;
     this.grid = false
+    const PERSON_RADIUS = 2;
+    const HIGHLIGHT_RADIUS = 2;
 
     this.paint_faction_map = (rooms) => {
         for (let r = 0; r < rooms.length; r++){
@@ -165,6 +169,19 @@ function Renderer(){
             this.hideGrid();
         }
     }
+
+    this.paintIndividual = (x,y, fill_color, radius_highlight) =>{
+        let highlight = 0;
+        if (radius_highlight){
+            highlight = HIGHLIGHT_RADIUS;
+        }
+        ctx.beginPath();
+        ctx.fillStyle = this.COLOR_MAP[5];
+        ctx.fillRect(x, y, cell_x, cell_y);
+        ctx.fillStyle = fill_color;
+        ctx.arc(x+(this.cell_x/2), y+(this.cell_y/2), PERSON_RADIUS+highlight, 0, 2*Math.PI);
+        ctx.fill();
+    }
 }
 
-var renderer = new Renderer();
+var renderer = new Renderer(10, 10);

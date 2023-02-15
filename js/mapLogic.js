@@ -1,7 +1,7 @@
-function DungeonMap(height, width){
+function DungeonMap(height, width, cell_x, cell_y){
     //Basic cell information
-    this.cell_x = 10;
-    this.cell_y = 10;
+    this.cell_x = cell_x;
+    this.cell_y = cell_y;
     this.total_y_cells = Math.floor(height / this.cell_y);
     this.total_x_cells = Math.floor(width / this.cell_x);
 
@@ -73,15 +73,23 @@ function DungeonMap(height, width){
         }
     }
 
+    this.calculateRoomMaxPopulation = (room)=>{
+        let area = room.width * room.height;
+        return Math.floor(area / 2);
+    }
+
     this.create_room = ()=>{
         var room = {
             width: randomOddIntFromInterval(this.minRoomWidth,this.maxRoomWidth),
             height: randomOddIntFromInterval(this.minRoomHeight,this.maxRoomHeight),
-            neighbors: []
+            neighbors: [],
+            max_population:0,
+            current_population:0
         }
         room.y_coord = randomOddIntFromInterval(1,this.total_y_cells-room.height-2);
         room.x_coord = randomOddIntFromInterval(1,this.total_x_cells-room.width-2);
         room.key = 'x:'+room.x_coord+'y:'+room.y_coord
+        room.max_population = this.calculateRoomMaxPopulation(room);
         return room;
     }
 
@@ -448,5 +456,21 @@ function DungeonMap(height, width){
             }
         }
         return returnable;
+    }
+
+    this.placeIndividuals = (faction_index, individuals) => {
+        let available_rooms = this.room_array.filter((e)=>e.owner == faction_index)
+        for (let i = 0; i < individuals.length; i++){
+            let room = available_rooms[randomIntFromInterval(0,available_rooms.length-1)]
+
+            individuals[i].x = randomIntFromInterval(room.x_coord+1, room.x_coord+room.width-1)
+            individuals[i].y = randomIntFromInterval(room.y_coord+1, room.y_coord+room.height-1)
+            individuals[i].x = individuals[i].x * this.cell_x;
+            individuals[i].y = individuals[i].y * this.cell_y;
+
+            renderer.paintIndividual(individuals[i].x, individuals[i].y, '#fff', false);
+
+            room.current_population++;
+        }
     }
 }
