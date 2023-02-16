@@ -29,6 +29,12 @@ canvas{
 	display:block;
 }
 
+#text-explainer{
+    font-size:0.9rem;
+    text-align: center;
+    padding:10px;
+    border:1px solid #fff;
+}
 .accordion{
     background-color:#1DD3B0;
     font-size:large;
