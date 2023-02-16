@@ -468,8 +468,6 @@ function DungeonMap(height, width, cell_x, cell_y){
             individuals[i].x = individuals[i].x * this.cell_x;
             individuals[i].y = individuals[i].y * this.cell_y;
 
-            renderer.paintIndividual(individuals[i].x, individuals[i].y, '#fff', false);
-
             room.current_population++;
         }
     }

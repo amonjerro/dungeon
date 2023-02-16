@@ -69,7 +69,10 @@
 				</div>
 			</div>
 			<div id="textOutput" class="horizontal-section scrollable">
-				Section under construction
+				<div id="text-explainer">
+					<p>You can use the accordions in this section to highlight each individual in the map, to find where each individual of each faction can be found. Mouse over each one to see them highlighted in the map.</p>
+					<p>This section is still under construction</p>
+				</div>
 				<div id="factionContainer"></div>
 				
 			</div>
@@ -219,10 +222,12 @@
 				
 				let divvied_numbers = dungeonMap.factionDivvy(factionFactory.factions)
 				factionFactory.recalculateFactionSizes(divvied_numbers)
-				render_screen()
 				for (let f = 0; f < factionFactory.factions.length; f++){
 					dungeonMap.placeIndividuals(f,factionFactory.factions[f].listIndividuals())
 				}
+				
+				render_screen()
+				
 				
 			}
 
@@ -239,6 +244,12 @@
 					render_faction()
 				} else {
 					render_nonfaction()
+				}
+				for (let f = 0; f < factionFactory.factions.length; f++){
+					let individuals = factionFactory.factions[f].listIndividuals()
+					for (let i = 0; i < individuals.length; i++){
+						renderer.paintIndividual(individuals[i].x, individuals[i].y,'#fff', false)
+					}
 				}
 			}
 
