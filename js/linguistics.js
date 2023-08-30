@@ -54,11 +54,11 @@ const LETTER_TO_LETTER_MARKOV_VALUES = new Map([
         ],
         'c':[
             ['b',0.10],['c',0.05],['d',0.11],['f',0.05],
-            ['g',0.07],['h',0.01],['j',0.01],['k',0.01],
+            ['g',0.07],['h',0.01],['j',0.00],['k',0.00],
             ['l',0.15],['m',0.10],['n',0.05],['p',0.05],
-            ['q',0.01],['r',0.19],['s',0.01],['t',0.07],
-            ['v',0.01],['w',0.01],['x',0.01],['y',0.01],
-            ['z',0.01]
+            ['q',0.01],['r',0.14],['s',0.01],['t',0.07],
+            ['v',0.01],['w',0.01],['x',0.00],['y',0.01],
+            ['z',0.00]
         ]
     }],
     ['e',{
@@ -92,11 +92,11 @@ const LETTER_TO_LETTER_MARKOV_VALUES = new Map([
             ['a',0.1],['e',0.1],['o',0.1],['i',0.6],['u',0.1]
         ],
         'c':[
-            ['b',0.10],['c',0.05],['d',0.07],['f',0.05],
-            ['g',0.07],['h',0.01],['j',0.01],['k',0.01],
-            ['l',0.10],['m',0.10],['n',0.05],['p',0.05],
-            ['q',0.01],['r',0.07],['s',0.12],['t',0.07],
-            ['v',0.01],['w',0.01],['x',0.02],['y',0.01],
+            ['b',0.01],['c',0.01],['d',0.07],['f',0.05],
+            ['g',0.07],['h',0.15],['j',0.01],['k',0.01],
+            ['l',0.16],['m',0.10],['n',0.05],['p',0.01],
+            ['q',0.01],['r',0.11],['s',0.12],['t',0.01],
+            ['v',0.01],['w',0.01],['x',0.01],['y',0.01],
             ['z',0.01]
         ]
     }],
@@ -212,7 +212,7 @@ const LETTER_TO_LETTER_MARKOV_VALUES = new Map([
             ['b',0.10],['c',0.05],['d',0.07],['f',0.05],
             ['g',0.07],['h',0.01],['j',0.01],['k',0.01],
             ['l',0.15],['m',0.10],['n',0.05],['p',0.05],
-            ['q',0.00],['r',0.07],['s',0.12],['t',0.07],
+            ['q',0.00],['r',0.07],['s',0.10],['t',0.07],
             ['v',0.01],['w',0.01],['x',0.00],['y',0.01],
             ['z',0.01]
         ]
@@ -223,10 +223,10 @@ const LETTER_TO_LETTER_MARKOV_VALUES = new Map([
         ],
         'c':[
             ['b',0.00],['c',0.15],['d',0.07],['f',0.05],
-            ['g',0.07],['h',0.01],['j',0.00],['k',0.01],
+            ['g',0.07],['h',0.00],['j',0.00],['k',0.00],
             ['l',0.13],['m',0.10],['n',0.10],['p',0.05],
-            ['q',0.00],['r',0.07],['s',0.15],['t',0.03],
-            ['v',0.01],['w',0.01],['x',0.00],['y',0.03],
+            ['q',0.00],['r',0.07],['s',0.15],['t',0.02],
+            ['v',0.00],['w',0.01],['x',0.00],['y',0.03],
             ['z',0.00]
         ]
     }],
@@ -235,24 +235,24 @@ const LETTER_TO_LETTER_MARKOV_VALUES = new Map([
             ['a',0.1],['e',0.1],['o',0.1],['i',0.6],['u',0.1]
         ],
         'c':[
-            ['b',0.10],['c',0.05],['d',0.15],['f',0.05],
+            ['b',0.09],['c',0.05],['d',0.15],['f',0.03],
             ['g',0.07],['h',0.01],['j',0.01],['k',0.01],
             ['l',0.10],['m',0.10],['n',0.05],['p',0.05],
-            ['q',0.01],['r',0.07],['s',0.12],['t',0.07],
-            ['v',0.01],['w',0.00],['x',0.02],['y',0.01],
+            ['q',0.01],['r',0.05],['s',0.12],['t',0.05],
+            ['v',0.01],['w',0.00],['x',0.00],['y',0.01],
             ['z',0.03]
         ]
     }],
     ['s',{
         'v':[
-            ['a',0.2],['e',0.3],['o',0.1],['i',0.2],['u',02]
+            ['a',0.2],['e',0.3],['o',0.1],['i',0.2],['u',0.2]
         ],
         'c':[
             ['b',0.01],['c',0.05],['d',0.05],['f',0.05],
             ['g',0.05],['h',0.17],['j',0.01],['k',0.01],
             ['l',0.10],['m',0.10],['n',0.05],['p',0.05],
             ['q',0.00],['r',0.07],['s',0.06],['t',0.10],
-            ['v',0.01],['w',0.01],['x',0.06],['y',0.01],
+            ['v',0.01],['w',0.01],['x',0.03],['y',0.01],
             ['z',0.01]
         ]
     }],
@@ -452,5 +452,33 @@ function MarkovChain(length){
         let concatenated = VOWELS.concat(CONSONANTS)
         let idx = Math.floor(Math.random()*concatenated.length)
         this.currentState = concatenated[idx]
+    }
+}
+
+function alphabetIntegrityCheck(){
+    for (let i = 0; i < CONSONANTS.length; i++){
+        let consonant = CONSONANTS[i]
+        let subset = LETTER_TO_LETTER_MARKOV_VALUES.get(consonant)
+        analyzeLetterIntegrity(consonant, subset)
+    }
+    for (let i = 0; i < VOWELS.length; i++){
+        let vowel = VOWELS[i]
+        let subset = LETTER_TO_LETTER_MARKOV_VALUES.get(vowel)
+        analyzeLetterIntegrity(vowel, subset)
+    }
+}
+
+function analyzeLetterIntegrity(letter, subset){
+    let to_consonant_probabilities = subset.c.map((e)=>{ return e[1]}).reduce((acc, curr)=> acc+curr, 0)
+    if (to_consonant_probabilities >= 1.01){
+        
+        console.error("To consonant probability error: ", letter, to_consonant_probabilities)
+        console.info(letter, subset)
+    }
+
+    let to_vowel_probabilities = subset.v.map((e)=>{ return e[1]}).reduce((acc, curr)=> acc+curr, 0)
+    if (to_vowel_probabilities >= 1.01){
+        console.error("To vowel probability error: ", letter, to_vowel_probabilities)
+        console.info(letter, subset)
     }
 }

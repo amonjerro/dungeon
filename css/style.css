@@ -82,6 +82,11 @@ canvas{
     color:#000;
 }
 
+
+.faction-roster {
+    columns:3;
+}
+
 .faction-individual:hover{
     text-shadow:
     -1px -1px 0 #ccc,
@@ -93,4 +98,8 @@ canvas{
     -o-transition: all .5s;
     transition: all .5s;
     cursor:pointer;
+}
+
+.individual-panel-title{
+    text-align:center;
 }

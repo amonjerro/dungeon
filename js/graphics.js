@@ -15,7 +15,13 @@ function Renderer(cell_x, cell_y){
 
     this.paint_faction_map = (rooms) => {
         for (let r = 0; r < rooms.length; r++){
-            this.paint_room(rooms[r], pickAColor(rooms[r].owner))
+            let room_owner = rooms[r].owner
+            if (room_owner >= 0){
+                this.paint_room(rooms[r], pickAColor(room_owner))
+            } else {
+                this.paint_room(rooms[r], this.COLOR_MAP[5])
+            }
+            
         }
     }
     

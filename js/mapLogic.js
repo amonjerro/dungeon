@@ -84,7 +84,8 @@ function DungeonMap(height, width, cell_x, cell_y){
             height: randomOddIntFromInterval(this.minRoomHeight,this.maxRoomHeight),
             neighbors: [],
             max_population:0,
-            current_population:0
+            current_population:0,
+            owner:-1
         }
         room.y_coord = randomOddIntFromInterval(1,this.total_y_cells-room.height-2);
         room.x_coord = randomOddIntFromInterval(1,this.total_x_cells-room.width-2);
@@ -459,16 +460,29 @@ function DungeonMap(height, width, cell_x, cell_y){
     }
 
     this.placeIndividuals = (faction_index, individuals) => {
-        let available_rooms = this.room_array.filter((e)=>e.owner == faction_index)
+        let available_rooms = this.room_array.filter((e) => e.owner == faction_index)
         for (let i = 0; i < individuals.length; i++){
-            let room = available_rooms[randomIntFromInterval(0,available_rooms.length-1)]
+            let picked_value = randomIntFromInterval(0,available_rooms.length-1)
+            let room = available_rooms[picked_value]
+            try{
+                individuals[i].x = randomIntFromInterval(room.x_coord+1, room.x_coord+room.width-1)
+                individuals[i].y = randomIntFromInterval(room.y_coord+1, room.y_coord+room.height-1)
+                individuals[i].x = individuals[i].x * this.cell_x;
+                individuals[i].y = individuals[i].y * this.cell_y;
 
-            individuals[i].x = randomIntFromInterval(room.x_coord+1, room.x_coord+room.width-1)
-            individuals[i].y = randomIntFromInterval(room.y_coord+1, room.y_coord+room.height-1)
-            individuals[i].x = individuals[i].x * this.cell_x;
-            individuals[i].y = individuals[i].y * this.cell_y;
+                room.current_population++;
+            }catch(e){
+                console.log(available_rooms, picked_value)
+            }
+            
+        }
+    }
 
-            room.current_population++;
+    this.unassignRooms = ()=>{
+        for (let i = 0; i < this.room_array.length; i++){
+            if (this.room_array[i].current_population == 0){
+                this.room_array[i].owner = -1
+            }
         }
     }
 }
