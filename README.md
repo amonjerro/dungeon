@@ -12,7 +12,7 @@ The construction of the maze is based on Prim's algorithm [as explained](http://
 - [X] Shave off useless corridors
 - [X] Connect corridors with rooms
 - [ ] Revamp graphics
-- [ ] Procedural room contents
+- [X] Procedural room contents
 - [ ] Simple dungeon stories?
 
 ## What's in store
