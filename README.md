@@ -25,7 +25,7 @@ Hopefully weekly? This is sort of a whenever-free-time-allows kinda deal so it's
 
 ## How can I contribute?
 
-However you wish. Documentation is always welcome, as well as constructive criticism. I'm new to this whole Git thing so I guess I'll be evaluating anything else on a case-by-case basis.
+However you wish. Documentation is always welcome, as well as constructive criticism.
 
 ### A caveat
 English isn't my first language; Spanish is. I'll try to keep the docs and comments in English but I make no promises regarding the commit messages. Those messages I write them as spur of the moment stuff while trying to be descriptive. So, yeah.
