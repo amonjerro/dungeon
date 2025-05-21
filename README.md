@@ -1,5 +1,5 @@
 # dungeon
-A procedural dungeon generator for the web. 
+A procedural dungeon generator for the web. Check it out in action [here](https://amonjerro.github.io/dungeon/)
 
 The construction of the maze is based on Prim's algorithm [as explained](http://weblog.jamisbuck.org/2011/1/10/maze-generation-prim-s-algorithm) by Jamis Buck.
 
